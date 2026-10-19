@@ -66,8 +66,10 @@ public class ModCreativeTabs {
                                     continue;
                                 }
                                 for (var material : materials) {
-                                    if (material.headStats() == null
-                                            || material.headStats().equals(MaterialStats.EMPTY)) {
+                                    boolean head = material.headStats() != null
+                                            && !material.headStats().equals(MaterialStats.EMPTY);
+                                    MaterialStats own = material.getStatsForSlot(partItem.getPartSlot());
+                                    if (!head && (own == null || own.equals(MaterialStats.emptyFor(partItem.getPartSlot())))) {
                                         continue;
                                     }
                                     output.accept(partItem.withMaterial(material.id()));

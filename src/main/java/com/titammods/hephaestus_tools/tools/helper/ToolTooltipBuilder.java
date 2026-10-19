@@ -130,7 +130,7 @@ public final class ToolTooltipBuilder {
 
             Component name = new ItemStack(partItem).getHoverName().copy()
                     .append(" (")
-                    .append(Component.translatable("material.hephaestus_tools." + matId.id().getPath()))
+                    .append(Component.translatable(matId.translationKey()))
                     .append(")")
                     .withStyle(ChatFormatting.UNDERLINE)
                     .withStyle(s -> s.withColor(color));

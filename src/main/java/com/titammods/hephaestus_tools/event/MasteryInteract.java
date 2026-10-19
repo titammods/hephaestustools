@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.event;
 
+import com.titammods.hephaestus_tools.effect.WearCause;
 import com.titammods.hephaestus_tools.table.MasteryAoe;
 import com.titammods.hephaestus_tools.table.MasteryLevel;
 import com.titammods.hephaestus_tools.table.ToolMastery;
@@ -82,7 +83,7 @@ public final class MasteryInteract {
         } finally {
             TILLING.remove();
         }
-        if (changed) ToolDurability.hurt(tool, 1, player.level(), player);
+        if (changed) ToolDurability.hurt(tool, 1, player.level(), player, WearCause.USE);
         return changed;
     }
 

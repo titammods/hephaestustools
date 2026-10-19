@@ -522,7 +522,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             if (menu.isRepair() && !menu.input(0).isEmpty() && !(menu.input(0).getItem() instanceof ToolPartItem)) {
                 boolean ok = canRepairNow();
                 readyButton(g, bx, sy, bw, DOCK_H, ok, ok && bh, tr("repair_button"));
-                tip(bx, sy, bw, DOCK_H, tr("repair_button_hint"));
+                tip(bx, sy, bw, DOCK_H, trArgs("repair_button_hint", menu.repairPercent() + "%"));
                 return;
             }
             if (menu.isRepair() && menu.input(0).getItem() instanceof ToolPartItem) {
@@ -650,7 +650,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             else if (!empty) g.item(staged, x + 3, ry + 3);
             text(g, !empty ? staged.getHoverName() : need.isEmpty() ? tr("repair") : need.getHoverName(), x + 27, ry + 2, w - 27, .72f, INK);
             boolean ok = part ? buildSwapIndex() >= 0 : canRepairNow();
-            int needed = WorkbenchMenu.repairUnitsNeeded(menu.output());
+            int needed = menu.repairUnitsNeeded(menu.output());
             Component second = empty ? (needed > 0 ? tr("repair_drop").copy().append(" (" + needed + ")") : tr("repair_full"))
                     : part ? tr(ok ? "swap_ready" : "swap_same")
                     : ok ? tr("repair_press").copy().append(" (" + menu.repairUnitsUsed() + "/" + needed + ")") : tr("repair_full");
@@ -664,7 +664,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
                 if (h) fill(g, x, repairFillY() + 13, fw, 1, FILL_LINK);
                 hintY = repairFillY() + 20;
             }
-            wrapped(g, tr("workbench_repair_hint"), x, hintY, w, .56f, INK2, 5);
+            wrapped(g, trArgs("workbench_repair_hint", menu.repairPercent() + "%"), x, hintY, w, .56f, INK2, 5);
             return;
         }
         if (none) {
@@ -826,7 +826,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             int top = y;
             ItemStack partStack = parts.get(i) instanceof ToolPartItem tp ? tp.withMaterial(mat) : new ItemStack(parts.get(i));
             g.item(partStack, x, y + 1);
-            Component matName = Component.translatable("material.hephaestus_tools." + mat.id().getPath());
+            Component matName = Component.translatable(mat.translationKey());
             text(g, new ItemStack(parts.get(i)).getHoverName().copy().append(Component.literal("  ")).append(matName.copy().withColor(INK2 & 0xFFFFFF)), x + 20, y, w - 20, PART_NAME_SCALE, INK);
             List<Component> lines = new ArrayList<>();
             lines.add(partStack.getHoverName());
@@ -1813,7 +1813,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             for (var trait : ToolTraits.ofPart(mat, ToolBuildHandler.partRole(parts, i))) {
                 Component traitName = ToolTooltipBuilder.traitName(trait);
                 Component traitDesc = Component.translatable(ToolTraits.descriptionKey(trait.id()));
-                Component materialName = Component.translatable("material.hephaestus_tools." + mat.id().getPath());
+                Component materialName = Component.translatable(mat.translationKey());
                 Component partName = i < parts.size() ? new ItemStack(parts.get(i)).getHoverName() : Component.literal("");
                 traitDetails.add(traitName.copy().append(" - ").append(materialName).append(" (").append(partName).append(")"));
                 traitRows.add(new Component[] {traitName, traitDesc, materialName});
@@ -2270,7 +2270,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
 
     private boolean canFillRepair() {
         if (menu.getActiveTab() != 0 || !menu.isRepair() || toolsOpen || !menu.getCarried().isEmpty() || minecraft == null || minecraft.player == null) return false;
-        int needed = WorkbenchMenu.repairUnitsNeeded(menu.output());
+        int needed = menu.repairUnitsNeeded(menu.output());
         if (needed <= 0) return false;
         ItemStack bench = menu.input(0);
         if (menu.isRepairMaterial(bench) && bench.getCount() >= needed) return false;

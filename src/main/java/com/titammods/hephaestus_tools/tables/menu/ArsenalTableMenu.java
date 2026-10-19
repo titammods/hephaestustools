@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.tables.menu;
 
+import com.titammods.hephaestus_tools.effect.ToolEffects;
 import com.titammods.hephaestus_tools.materials.MaterialId;
 import com.titammods.hephaestus_tools.materials.MaterialManager;
 import com.titammods.hephaestus_tools.registry.ModMenus;
@@ -12,6 +13,7 @@ import com.titammods.hephaestus_tools.tools.helper.ToolBuildHandler;
 import com.titammods.hephaestus_tools.tools.item.ModifiableItem;
 import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import com.titammods.hephaestus_tools.tools.part.ToolPartItem;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -36,6 +38,7 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
 
     protected int activeTab = 0;
     protected final ArsenalTableBlockEntity blockEntity;
+    protected final Player user;
     protected int selectedTool = 0;
 
     public ArsenalTableMenu(int id, Inventory inv, ArsenalTableBlockEntity be) {
@@ -45,6 +48,7 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
     protected ArsenalTableMenu(MenuType<?> type, int id, Inventory inv, ArsenalTableBlockEntity be) {
         super(type, id);
         blockEntity = be;
+        user = inv.player;
         ToolAssembly.init();
         addSlot(new SlotItemHandler(be.getUpgradeSlot(), 0, 112, 56) {
             @Override public boolean isActive() { return activeTab != 0 && slotsVisible(); }
@@ -134,6 +138,20 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
 
     public ItemStack output() { return slots.get(5).getItem(); }
 
+    public static int repairPerMaterial(ItemStack tool, LivingEntity repairer) {
+        return Math.max(1, ToolEffects.modifyRepair(repairer, tool, baseRepairPerMaterial(tool)));
+    }
+
+    private static int baseRepairPerMaterial(ItemStack tool) {
+        return Math.max(1, (ToolStack.getDurability(tool) + REPAIR_DIVISOR - 1) / REPAIR_DIVISOR);
+    }
+
+    public int repairPercent() {
+        if (!isRepair()) return 100 / REPAIR_DIVISOR;
+        ItemStack tool = output();
+        return Math.round(100f / REPAIR_DIVISOR * repairPerMaterial(tool, user) / baseRepairPerMaterial(tool));
+    }
+
     public boolean isRepairMaterial(ItemStack stack) {
         if (stack.isEmpty() || !ToolStack.isInitialized(tool())) return false;
         var material = MaterialManager.getInstance().getMaterial(ToolStack.getMaterial(tool(), 0));
@@ -195,7 +213,7 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
             if (!swapped.isEmpty()) return swapped;
             if (ToolStack.getCurrentDamage(tool()) <= 0 || !accepts(0, input(0))) return ItemStack.EMPTY;
             ItemStack result = tool().copyWithCount(1);
-            int restored = Math.max(1, (ToolStack.getDurability(result) + REPAIR_DIVISOR - 1) / REPAIR_DIVISOR);
+            int restored = repairPerMaterial(result, user);
             result.setDamageValue(Math.max(0, ToolStack.getCurrentDamage(result) - restored));
             return result;
         }
@@ -333,7 +351,7 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
         ItemStack material = input(0);
         if (current.isEmpty() || material.isEmpty() || ToolStack.getCurrentDamage(current) <= 0 || !accepts(0, material)) return;
         ItemStack repaired = current.copyWithCount(1);
-        int restored = Math.max(1, (ToolStack.getDurability(repaired) + REPAIR_DIVISOR - 1) / REPAIR_DIVISOR);
+        int restored = repairPerMaterial(repaired, user);
         repaired.setDamageValue(Math.max(0, ToolStack.getCurrentDamage(repaired) - restored));
         blockEntity.getOutputSlot().setStackInSlot(0, repaired);
         blockEntity.getInputSlots().extractItem(0, 1, false);

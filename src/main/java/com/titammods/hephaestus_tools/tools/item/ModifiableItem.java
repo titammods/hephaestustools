@@ -1,7 +1,9 @@
 package com.titammods.hephaestus_tools.tools.item;
 
 import com.titammods.hephaestus_tools.api.event.ToolTraitTooltipEvent;
+import com.titammods.hephaestus_tools.effect.ItemUse;
 import com.titammods.hephaestus_tools.effect.ToolEffects;
+import com.titammods.hephaestus_tools.effect.WearCause;
 import com.titammods.hephaestus_tools.materials.MaterialId;
 import com.titammods.hephaestus_tools.event.MasteryEvents;
 import com.titammods.hephaestus_tools.event.MasteryInteract;
@@ -9,6 +11,7 @@ import com.titammods.hephaestus_tools.materials.trait.ToolTraits;
 import com.titammods.hephaestus_tools.materials.trait.ToolTraits.TraitInstance;
 import com.titammods.hephaestus_tools.registry.ModComponents;
 import com.titammods.hephaestus_tools.table.ToolXp;
+import com.titammods.hephaestus_tools.tools.aoe.PlayerBlockBreaks;
 import com.titammods.hephaestus_tools.tools.helper.ToolTooltipBuilder;
 import com.titammods.hephaestus_tools.tools.helper.ToolDurability;
 import com.titammods.hephaestus_tools.tools.helper.ToolEnchantments;
@@ -26,6 +29,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -37,6 +41,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -77,8 +82,7 @@ public abstract class ModifiableItem extends Item {
 
     @Override
     public boolean canPerformAction(ItemInstance instance, ItemAbility ability) {
-        if (instance instanceof ItemStack stack
-                && (!ToolStack.isInitialized(stack) || ToolStack.isBroken(stack))) {
+        if (instance instanceof ItemStack stack && !ToolStack.isUsable(stack)) {
             return false;
         }
         if (instance instanceof ItemStack stack && ability == ItemAbilities.HOE_TILL
@@ -131,8 +135,12 @@ public abstract class ModifiableItem extends Item {
 
     @Override
     public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @Nullable T entity, Consumer<Item> onBroken) {
+        WearCause cause = ToolDurability.takeCause();
         if (ToolStack.isInitialized(stack) && ToolStack.getProperties(stack).getStat(ToolStats.INDESTRUCTIBLE, 0f) > 0f) return 0;
-        return super.damageItem(stack, amount, entity, onBroken);
+        if (ToolStack.isBroken(stack) && ToolStack.isUsable(stack)) return 0;
+        int wear = super.damageItem(stack, amount, entity, onBroken);
+        if (entity == null || entity.hasInfiniteMaterials() || !stack.isDamageableItem()) return wear;
+        return ToolEffects.modifyWear(entity, stack, wear, cause);
     }
 
     public float getAttackDamageBonus() { return 0f; }
@@ -148,7 +156,7 @@ public abstract class ModifiableItem extends Item {
         }
 
         ToolPropertiesData props = ToolStack.getProperties(stack);
-        float attackDamage = ToolStack.isBroken(stack) ? 0f : Math.max(0f, props.getAttackDamage());
+        float attackDamage = Math.max(0f, props.getAttackDamage()) * ToolStack.efficiency(stack);
         float attackSpeed  = props.getAttackSpeed();
 
         return ItemAttributeModifiers.builder()
@@ -166,15 +174,17 @@ public abstract class ModifiableItem extends Item {
     @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         if (!ToolStack.isInitialized(stack)) return 1.0f;
-        if (ToolStack.isBroken(stack)) return 0.0f;
+        float efficiency = ToolStack.efficiency(stack);
+        if (efficiency <= 0f) return 0.0f;
+        float speed = ToolStack.getMiningSpeed(stack) * efficiency;
         if (categories().contains(ToolCategory.SWORD) && state.is(Blocks.COBWEB))
-            return Math.max(15.0f, ToolStack.getMiningSpeed(stack));
-        return effectiveOn(state) ? ToolStack.getMiningSpeed(stack) : 1.0f;
+            return Math.max(15.0f, speed);
+        return effectiveOn(state) ? speed : 1.0f;
     }
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        if (!ToolStack.isInitialized(stack) || ToolStack.isBroken(stack)) return false;
+        if (!ToolStack.isUsable(stack)) return false;
         if (!effectiveOn(state)) return false;
         return ToolStack.getProperties(stack).getHarvestTier().canHarvest(state);
     }
@@ -184,7 +194,8 @@ public abstract class ModifiableItem extends Item {
                              BlockPos pos, LivingEntity entity) {
         if (level instanceof ServerLevel serverLevel && state.getDestroySpeed(level, pos) > 0
                 && !MasteryEvents.sparesAoeWear(stack, entity)) {
-            ToolDurability.hurt(stack, 1, serverLevel, entity);
+            ToolDurability.hurt(stack, 1, serverLevel, entity,
+                    PlayerBlockBreaks.isBreaking() ? WearCause.AREA_BLOCK : WearCause.BLOCK);
         }
         return true;
     }
@@ -193,7 +204,7 @@ public abstract class ModifiableItem extends Item {
     public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         super.hurtEnemy(stack, target, attacker);
         if (attacker.level() instanceof ServerLevel serverLevel) {
-            ToolDurability.hurt(stack, 1, serverLevel, attacker);
+            ToolDurability.hurt(stack, 1, serverLevel, attacker, WearCause.ATTACK);
         }
     }
 
@@ -210,7 +221,7 @@ public abstract class ModifiableItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext ctx) {
         ItemStack stack = ctx.getItemInHand();
-        if (!ToolStack.isInitialized(stack) || ToolStack.isBroken(stack)) return InteractionResult.PASS;
+        if (!ToolStack.isUsable(stack)) return InteractionResult.PASS;
 
         Level level = ctx.getLevel();
         BlockPos pos = ctx.getClickedPos();
@@ -241,10 +252,41 @@ public abstract class ModifiableItem extends Item {
         if (!level.isClientSide()) {
             level.setBlock(pos, modified, 11);
             if (player != null && !MasteryInteract.isTilling() && level instanceof ServerLevel serverLevel) {
-                ToolDurability.hurt(stack, 1, serverLevel, player);
+                ToolDurability.hurt(stack, 1, serverLevel, player, WearCause.USE);
             }
         }
         return InteractionResult.SUCCESS;
+    }
+
+    @Override
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+        if (ToolEffects.canStartUse(player, player.getItemInHand(hand), hand)) {
+            player.startUsingItem(hand);
+            return InteractionResult.CONSUME;
+        }
+        return super.use(level, player, hand);
+    }
+
+    @Override
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
+        return ToolEffects.itemUse(stack).map(ItemUse::animation).orElseGet(() -> super.getUseAnimation(stack));
+    }
+
+    @Override
+    public int getUseDuration(ItemStack stack, LivingEntity user) {
+        return ToolEffects.itemUse(stack).map(ItemUse::duration).orElseGet(() -> super.getUseDuration(stack, user));
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int ticksRemaining) {
+        ToolEffects.useTick(entity, stack, ticksRemaining);
+        super.onUseTick(level, entity, stack, ticksRemaining);
+    }
+
+    @Override
+    public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
+        if (ToolEffects.finishUse(entity, stack)) return stack;
+        return super.finishUsingItem(stack, level, entity);
     }
 
     @Override
@@ -307,9 +349,7 @@ public abstract class ModifiableItem extends Item {
     }
 
     private static Component materialName(MaterialId id) {
-        Identifier rl = id.id();
-        String key = "material." + rl.getNamespace() + "." + rl.getPath();
-        return Component.translatable(key);
+        return Component.translatable(id.translationKey());
     }
 
     private static void appendTrait(ItemStack stack, Consumer<Component> tooltip) {

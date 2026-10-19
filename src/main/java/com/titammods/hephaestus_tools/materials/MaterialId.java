@@ -29,6 +29,10 @@ public record MaterialId(Identifier id) {
         return this.equals(EMPTY);
     }
 
+    public String translationKey() {
+        return id.toLanguageKey("material");
+    }
+
     @Override
     public String toString() {
         return id.toString();

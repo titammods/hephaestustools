@@ -50,6 +50,13 @@ public final class ToolTraits {
         return cached(tool, materials).traits();
     }
 
+    public static int level(ItemStack tool, Identifier trait) {
+        for (TraitInstance instance : collect(tool)) {
+            if (instance.id().equals(trait)) return instance.level();
+        }
+        return 0;
+    }
+
     public static List<ActiveEffect> effects(Item tool, List<MaterialId> materials) {
         if (materials == null) return List.of();
         return cached(tool, materials).effects();

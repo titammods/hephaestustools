@@ -100,6 +100,10 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
         return Component.translatable("gui.hephaestus_tools.build." + key);
     }
 
+    private static Component tr(String key, Object... args) {
+        return Component.translatable("gui.hephaestus_tools.build." + key, args);
+    }
+
     public ArsenalTableScreen(ArsenalTableMenu menu, Inventory inv, Component title) {
         super(menu, inv, title);
     }
@@ -324,7 +328,7 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
             var mat = materials.get(i);
             for (var trait : ToolTraits.ofPart(mat, ToolBuildHandler.partRole(parts, i))) {
                 Component traitName = ToolTooltipBuilder.traitName(trait);
-                Component materialName = Component.translatable("material.hephaestus_tools." + mat.id().getPath());
+                Component materialName = Component.translatable(mat.translationKey());
                 Component partName = i < parts.size() ? new ItemStack(parts.get(i)).getHoverName() : Component.literal("");
                 traitDetails.add(traitName.copy().append(" - ").append(materialName).append(" (").append(partName).append(")"));
                 int traitY = (menu.getActiveTab() == 0 ? 133 : 127) + (traitDetails.size() - 1) * 7;
@@ -360,7 +364,7 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
         for (int i = 0; i < 4; i++)
             if (menu.slots.get(i + 1).isActive() && menu.input(i).isEmpty()
                     && in(mx, my, pos[i][0], pos[i][1], ArsenalTableLayout.SLOT_W, ArsenalTableLayout.SLOT_H))
-                tooltip = menu.isRepair() ? tr("repair_hint") : new ItemStack(menu.parts().get(i)).getHoverName();
+                tooltip = menu.isRepair() ? tr("repair_hint", menu.repairPercent() + "%") : new ItemStack(menu.parts().get(i)).getHoverName();
         if (in(mx, my, 300, 120, 64, 50) && !traitDetails.isEmpty())
             g.setComponentTooltipForNextFrame(font, traitDetails, mx, my);
         else if (tooltip != null) g.setTooltipForNextFrame(font, tooltip, mx, my);

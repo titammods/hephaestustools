@@ -130,11 +130,11 @@ public class WorkbenchMenu extends ArsenalTableMenu {
         return false;
     }
 
-    public static int repairPerUnit(ItemStack tool) {
-        return Math.max(1, (ToolStack.getDurability(tool) + REPAIR_DIVISOR - 1) / REPAIR_DIVISOR);
+    public int repairPerUnit(ItemStack tool) {
+        return repairPerMaterial(tool, user);
     }
 
-    public static int repairUnitsNeeded(ItemStack tool) {
+    public int repairUnitsNeeded(ItemStack tool) {
         if (tool.isEmpty() || !ToolStack.isInitialized(tool)) return 0;
         int damage = ToolStack.getCurrentDamage(tool);
         if (damage <= 0) return 0;

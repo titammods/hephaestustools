@@ -13,9 +13,11 @@ public final class ModifierStatContext {
     public int fortune;
     public int looting;
     public boolean indestructible;
+    public final int toolLevel;
 
     public ModifierStatContext(float durability, float miningSpeed, float attackDamage,
-                               float attackSpeed, int enchantability, HarvestTier harvestTier) {
+                               float attackSpeed, int enchantability, HarvestTier harvestTier, int toolLevel) {
+        this.toolLevel = toolLevel;
         this.durability = durability;
         this.miningSpeed = miningSpeed;
         this.attackDamage = attackDamage;

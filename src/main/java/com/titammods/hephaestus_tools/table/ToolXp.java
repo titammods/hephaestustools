@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.table;
 
+import com.titammods.hephaestus_tools.api.event.ToolXpEvent;
 import com.titammods.hephaestus_tools.tools.item.ModifiableItem;
 import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import net.minecraft.core.component.DataComponents;
@@ -10,6 +11,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
+import net.neoforged.neoforge.common.NeoForge;
 
 public final class ToolXp {
 
@@ -51,12 +53,15 @@ public final class ToolXp {
         if (amount <= 0 || !(tool.getItem() instanceof ModifiableItem) || !ToolStack.isInitialized(tool)) return;
         int oldLvl = getLevel(tool);
         if (oldLvl >= MAX_LEVEL) return;
-        setXp(tool, getXp(tool) + amount);
+        ToolXpEvent event = NeoForge.EVENT_BUS.post(new ToolXpEvent(tool, player, amount));
+        if (event.isCanceled() || event.getAmount() <= 0) return;
+        setXp(tool, getXp(tool) + event.getAmount());
         int newLvl = getLevel(tool);
         if (newLvl > oldLvl) onLevelUp(tool, player, oldLvl, newLvl);
     }
 
     private static void onLevelUp(ItemStack tool, ServerPlayer p, int from, int to) {
+        ToolStack.recalculate(tool);
         p.level().playSound(null, p.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.5f, 1.5f);
         p.sendSystemMessage(Component.translatable("msg.hephaestus_tools.levelup",
                 tool.getHoverName(), to, Component.translatable(rankKey(to))));

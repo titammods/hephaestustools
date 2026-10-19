@@ -53,7 +53,7 @@ public class ToolPartItem extends Item {
         Material material = MaterialManager.getInstance().getMaterial(mat);
         int color = material != null ? material.color() & 0xFFFFFF : 0xFFFFFF;
         tooltip.accept(Component.translatable("tooltip.hephaestus_tools.material",
-                        Component.translatable("material.hephaestus_tools." + mat.id().getPath())
+                        Component.translatable(mat.translationKey())
                                 .withStyle(s -> s.withColor(color)))
                 .withStyle(ChatFormatting.GRAY));
 

@@ -1,6 +1,7 @@
 package com.titammods.hephaestus_tools.materials.trait;
 
 import com.titammods.hephaestus_tools.HephaestusTools;
+import com.titammods.hephaestus_tools.effect.DoubleLevelValue;
 import com.titammods.hephaestus_tools.effect.EffectOperation;
 import com.titammods.hephaestus_tools.effect.ScaledAmount;
 import com.titammods.hephaestus_tools.effect.StatType;
@@ -59,7 +60,7 @@ public final class BuiltInTraits {
         add(out, "pierce", new BonusDamageEffect(EffectOperation.ADD,
                 ScaledAmount.scaled(0.2f, TargetArmorScale.INSTANCE, 4.0f)));
         add(out, "cultivated", new RepairEffect(40, LevelValue.of(1f), true));
-        add(out, "magnetic", new PullItemsEffect(5, 5.0, 0.12,
+        add(out, "magnetic", new PullItemsEffect(5, DoubleLevelValue.of(5.0), DoubleLevelValue.of(0.12),
                 Optional.of(new EquippedCondition(EquipmentSlotGroup.HAND))));
         add(out, "shock", new BonusDamageEffect(EffectOperation.ADD, ScaledAmount.of(2.5f),
                 TargetWetCondition.INSTANCE));

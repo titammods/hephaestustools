@@ -1,6 +1,7 @@
 package com.titammods.hephaestus_tools.tools.nbt;
 
 import com.titammods.hephaestus_tools.api.event.ToolRecalculatedEvent;
+import com.titammods.hephaestus_tools.effect.ToolEffects;
 import com.titammods.hephaestus_tools.materials.MaterialId;
 import com.titammods.hephaestus_tools.materials.MaterialManager;
 import com.titammods.hephaestus_tools.materials.tier.TierManager;
@@ -50,7 +51,11 @@ public final class ToolStack {
 
     public static boolean isUsable(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() instanceof ModifiableItem
-                && isInitialized(stack) && !isBroken(stack);
+                && isInitialized(stack) && efficiency(stack) > 0f;
+    }
+
+    public static float efficiency(ItemStack stack) {
+        return isBroken(stack) ? ToolEffects.brokenEfficiency(stack) : 1f;
     }
 
     public static List<MaterialId> getMaterials(ItemStack stack) {
@@ -188,7 +193,7 @@ public final class ToolStack {
     }
 
     private static void updateAttributeModifiers(ItemStack stack, ToolPropertiesData properties) {
-        float attackDamage = isBroken(stack) ? 0f : Math.max(0f, properties.getAttackDamage());
+        float attackDamage = Math.max(0f, properties.getAttackDamage()) * efficiency(stack);
         float attackSpeed = properties.getAttackSpeed() - 4.0f;
 
         ItemAttributeModifiers modifiers = ItemAttributeModifiers.builder()
@@ -219,13 +224,14 @@ public final class ToolStack {
         Set<ToolCategory> categories = modItem.categories();
         boolean sword = categories.contains(ToolCategory.SWORD);
 
-        if (isBroken(stack)) {
+        float efficiency = efficiency(stack);
+        if (efficiency <= 0f) {
             stack.set(DataComponents.TOOL, new Tool(List.of(), 0.0f, 1, !sword));
             return;
         }
 
         HarvestTier tier = properties.getHarvestTier();
-        float speed = Math.max(0.1f, properties.getMiningSpeed());
+        float speed = Math.max(0.1f, properties.getMiningSpeed()) * efficiency;
         HolderGetter<Block> blocks = BLOCK_LOOKUP.get();
 
         List<Tool.Rule> rules = new ArrayList<>();
