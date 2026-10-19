@@ -785,22 +785,16 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         return y + 15;
     }
 
-    private static final float PART_NAME_SCALE = .64f, PART_TRAIT_SCALE = .58f, PART_DESC_SCALE = .54f;
-    private static final int PART_ICON_H = 18, PART_GAP = 4;
+    private static final float PART_NAME_SCALE = .64f, PART_TRAIT_SCALE = .58f;
+    private static final int PART_ICON_H = 18, PART_GAP = 4, PART_TRAIT_LINES = 3;
 
-    private int partDescHeight(Component desc, int width, int maxLines) {
-        int lines = Math.min(maxLines, font.split(desc, (int) (width / (PART_DESC_SCALE * TEXT_BOOST))).size());
-        return Math.round(lines * (font.lineHeight + 2) * PART_DESC_SCALE * TEXT_BOOST);
-    }
-
-    private int partRowHeight(List<ToolTraits.TraitInstance> traits, int w, int maxLines) {
-        if (traits.isEmpty()) return PART_ICON_H + 2;
-        int ty = 9;
+    private Component partTraitLine(List<ToolTraits.TraitInstance> traits) {
+        MutableComponent line = Component.empty();
         for (var trait : traits) {
-            ty = Math.max(ty + 8, PART_ICON_H);
-            ty += partDescHeight(Component.translatable(ToolTraits.descriptionKey(trait.id())), w, maxLines) + 2;
+            if (!line.getSiblings().isEmpty()) line.append(Component.literal(" \u00B7 ").withColor(INK3 & 0xFFFFFF));
+            line.append(ToolTooltipBuilder.traitName(trait).copy().withColor(INK_ORANGE & 0xFFFFFF));
         }
-        return Math.max(ty, PART_ICON_H + 2);
+        return line;
     }
 
     private int drawPartsBlock(GuiGraphicsExtractor g, int x, int y, int w) {
@@ -810,19 +804,9 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         y += 3;
         heading(g, x, y, w, tr("parts_title"), null);
         y += 17 + HG;
-        List<List<ToolTraits.TraitInstance>> partTraits = new ArrayList<>();
-        for (int i = 0; i < parts.size(); i++)
-            partTraits.add(ToolTraits.ofPart(materials.get(Math.min(i, materials.size() - 1)), ToolBuildHandler.partRole(parts, i)));
-        int room = pBottom() - y, maxLines = 4;
-        while (maxLines > 1) {
-            int total = 0;
-            for (var traits : partTraits) total += partRowHeight(traits, w, maxLines) + PART_GAP;
-            if (total <= room) break;
-            maxLines--;
-        }
         for (int i = 0; i < parts.size(); i++) {
             var mat = materials.get(Math.min(i, materials.size() - 1));
-            var traits = partTraits.get(i);
+            var traits = ToolTraits.ofPart(mat, ToolBuildHandler.partRole(parts, i));
             int top = y;
             ItemStack partStack = parts.get(i) instanceof ToolPartItem tp ? tp.withMaterial(mat) : new ItemStack(parts.get(i));
             g.item(partStack, x, y + 1);
@@ -830,25 +814,19 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             text(g, new ItemStack(parts.get(i)).getHoverName().copy().append(Component.literal("  ")).append(matName.copy().withColor(INK2 & 0xFFFFFF)), x + 20, y, w - 20, PART_NAME_SCALE, INK);
             List<Component> lines = new ArrayList<>();
             lines.add(partStack.getHoverName());
+            int bottom;
             if (traits.isEmpty()) {
                 text(g, tr("part_no_trait"), x + 20, y + 9, w - 20, PART_TRAIT_SCALE, INK3);
-                y += PART_ICON_H + 2;
+                bottom = y + 17;
             } else {
-                int ty = y + 9, tx = x + 20, tw = w - 20;
+                bottom = wrapped(g, partTraitLine(traits), x + 20, y + 9, w - 20, PART_TRAIT_SCALE, INK_ORANGE, PART_TRAIT_LINES);
                 for (var trait : traits) {
-                    Component tn = ToolTooltipBuilder.traitName(trait);
-                    Component td = Component.translatable(ToolTraits.descriptionKey(trait.id()));
-                    text(g, tn, tx, ty, tw, PART_TRAIT_SCALE, INK_ORANGE);
-                    ty = Math.max(ty + 8, y + PART_ICON_H);
-                    ty = wrapped(g, td, x, ty, w, PART_DESC_SCALE, INK2, maxLines) + 2;
-                    tx = x;
-                    tw = w;
-                    lines.add(tn.copy().withStyle(ChatFormatting.GOLD));
-                    lines.add(td);
+                    lines.add(ToolTooltipBuilder.traitName(trait).copy().withStyle(ChatFormatting.GOLD));
+                    lines.add(Component.translatable(ToolTraits.descriptionKey(trait.id())));
                 }
-                y = Math.max(ty, y + PART_ICON_H + 2);
             }
             lines.add(matName);
+            y = Math.max(bottom, y + PART_ICON_H) + 2;
             measure(y);
             tip(x, top - 1, w, y - top, lines.toArray(Component[]::new));
             y += PART_GAP;
