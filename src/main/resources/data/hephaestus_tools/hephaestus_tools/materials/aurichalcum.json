@@ -17,7 +17,10 @@
     "attack_speed": 1.0,
     "tier": 7,
     "enchantability": 36,
-    "trait": "maintained"
+    "traits": [
+      { "id": "maintained" },
+      { "id": "unbreakable" }
+    ]
   },
   "handle_stats": {
     "durability_mult": 0.35,

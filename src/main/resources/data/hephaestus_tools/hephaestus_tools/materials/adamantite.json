@@ -17,7 +17,10 @@
     "attack_speed": 1.0,
     "tier": 6,
     "enchantability": 32,
-    "trait": "dense"
+    "traits": [
+      { "id": "dense" },
+      { "id": "unbreakable" }
+    ]
   },
   "handle_stats": {
     "durability_mult": 0.3,
