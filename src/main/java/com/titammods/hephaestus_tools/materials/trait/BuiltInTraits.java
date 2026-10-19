@@ -16,6 +16,7 @@ import com.titammods.hephaestus_tools.effect.scales.TargetArmorScale;
 import com.titammods.hephaestus_tools.effect.scales.WearScale;
 import com.titammods.hephaestus_tools.effect.types.BonusDamageEffect;
 import com.titammods.hephaestus_tools.effect.types.BreakSpeedEffect;
+import com.titammods.hephaestus_tools.effect.types.IndestructibleEffect;
 import com.titammods.hephaestus_tools.effect.types.PullItemsEffect;
 import com.titammods.hephaestus_tools.effect.types.RepairEffect;
 import com.titammods.hephaestus_tools.effect.types.StatAddEffect;
@@ -67,6 +68,7 @@ public final class BuiltInTraits {
         add(out, "temperate",
                 new BreakSpeedEffect(EffectOperation.ADD, ScaledAmount.scaled(4.0f, new ColdScale(0.75f))),
                 new BonusDamageEffect(EffectOperation.ADD, ScaledAmount.scaled(1.5f, new ColdScale(0.75f))));
+        add(out, "unbreakable", IndestructibleEffect.INSTANCE);
         return out;
     }
 
