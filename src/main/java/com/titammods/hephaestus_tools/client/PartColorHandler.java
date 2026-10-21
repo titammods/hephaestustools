@@ -33,7 +33,8 @@ public final class PartColorHandler {
 
         int color = material.color();
         if ((color & 0xFF000000) == 0) color |= 0xFF000000;
-        return color;
+        int base = color;
+        return material.animation().map(a -> a.uniform(base, ToolColorHandler.animationTicks())).orElse(color);
     }
 
     public record Tint(int index) implements ItemTintSource {

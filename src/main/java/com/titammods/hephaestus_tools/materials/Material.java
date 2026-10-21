@@ -6,6 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
@@ -19,7 +20,8 @@ public record Material(
         int color,
         MaterialStats headStats,
         MaterialStats handleStats,
-        MaterialStats bindingStats
+        MaterialStats bindingStats,
+        Optional<MaterialAnimation> animation
 ) {
     public record MaterialIngredient(Identifier id, boolean tag) {
 
@@ -73,7 +75,8 @@ public record Material(
                     Codec.INT.optionalFieldOf("color", 0xFFFFFF).forGetter(Material::color),
                     MaterialStats.HEAD_CODEC.optionalFieldOf("head_stats", MaterialStats.EMPTY).forGetter(Material::headStats),
                     MaterialStats.HANDLE_CODEC.optionalFieldOf("handle_stats", MaterialStats.EMPTY_HANDLE).forGetter(Material::handleStats),
-                    MaterialStats.BINDING_CODEC.optionalFieldOf("binding_stats", MaterialStats.EMPTY_BINDING).forGetter(Material::bindingStats)
+                    MaterialStats.BINDING_CODEC.optionalFieldOf("binding_stats", MaterialStats.EMPTY_BINDING).forGetter(Material::bindingStats),
+                    MaterialAnimation.CODEC.optionalFieldOf("animation").forGetter(Material::animation)
             ).apply(instance, Material::new)
     );
 
@@ -88,6 +91,7 @@ public record Material(
                     MaterialStats.STREAM_CODEC, Material::headStats,
                     MaterialStats.STREAM_CODEC, Material::handleStats,
                     MaterialStats.STREAM_CODEC, Material::bindingStats,
+                    ByteBufCodecs.optional(MaterialAnimation.STREAM_CODEC), Material::animation,
                     Material::new
             );
 

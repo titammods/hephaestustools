@@ -49,6 +49,7 @@ public class PartCastingMeltingProvider implements DataProvider {
     private static final List<String> LTXI_MODS = List.of("ltxi");
     private static final List<String> STELLARIS_MODS = List.of("stellaris");
     private static final List<String> JUSTDIRETHINGS_MODS = List.of("justdirethings");
+    private static final List<String> REPLICATION_MODS = List.of("replication");
     private static final List<String> THAUMATURGE_MODS = List.of("thaumaturge");
     private static final List<String> NEOVITAE_MODS = List.of("neovitae");
     private static final List<String> NAUTEC_MODS = List.of("nautec");
@@ -135,6 +136,7 @@ public class PartCastingMeltingProvider implements DataProvider {
             new Metal("ferricore", 800, JUSTDIRETHINGS_MODS),
             new Metal("blazegold", 1000, JUSTDIRETHINGS_MODS),
             new Metal("eclipse_alloy", 1600, JUSTDIRETHINGS_MODS),
+            new Metal("replica", 1000, REPLICATION_MODS),
             new Metal("thaumium", 1000, THAUMATURGE_MODS),
             new Metal("void_metal", 1600, THAUMATURGE_MODS),
             new Metal("hellforged", 1600, NEOVITAE_MODS),

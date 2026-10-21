@@ -8,16 +8,19 @@ import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.client.ToolColorHandler;
 import com.titammods.hephaestus_tools.client.model.ModifierModelRegistry;
 import com.titammods.hephaestus_tools.config.HephaestusConfig;
+import com.titammods.hephaestus_tools.materials.MaterialAnimation;
 import com.titammods.hephaestus_tools.tools.nbt.ToolConstructionData;
 import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
@@ -34,9 +37,11 @@ import java.util.function.Consumer;
 
 public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.RenderData> {
 
-    public record Layer(Identifier texture, int color) {}
+    public record Layer(Identifier texture, int color, @Nullable MaterialAnimation animation) {}
 
-    public record RenderData(List<Layer> layers, List<Identifier> overlays) {}
+    public record RenderData(List<Layer> layers, List<Identifier> overlays, long phase) {}
+
+    private static final int PHASE_MS = 16;
 
 
     public static final Identifier RENDERER_ID =
@@ -123,7 +128,7 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         if (layers == null) return;
         int alphaBits = Math.max(0, Math.min(255, Math.round(alpha * 255f))) << 24;
         for (int i = 0; i < layers.size(); i++) {
-            int color = (ToolColorHandler.INSTANCE.getColor(stack, i) & 0x00FFFFFF) | alphaBits;
+            int color = (ToolColorHandler.INSTANCE.getAnimatedColor(stack, i) & 0x00FFFFFF) | alphaBits;
             graphics.blit(RenderPipelines.GUI_TEXTURED, png(layers.get(i)), x, y,
                     0f, 0f, size, size, 16, 16, 16, 16, color);
         }
@@ -139,7 +144,7 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         if (layers == null) return;
         int ta = argb >>> 24 & 255, tr = argb >> 16 & 255, tg = argb >> 8 & 255, tb = argb & 255;
         for (int i = 0; i < layers.size(); i++) {
-            int base = ToolColorHandler.INSTANCE.getColor(stack, i);
+            int base = ToolColorHandler.INSTANCE.getAnimatedColor(stack, i);
             int r = (base >> 16 & 255) * tr / 255, g = (base >> 8 & 255) * tg / 255, b = (base & 255) * tb / 255;
             int color = ta << 24 | r << 16 | g << 8 | b;
             graphics.blit(RenderPipelines.GUI_TEXTURED, png(layers.get(i)), x, y,
@@ -227,13 +232,17 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
     public @Nullable RenderData extractArgument(ItemStack stack) {
         List<String> paths = HephaestusConfig.modernInterface() ? workbenchLayersFor(stack.getItem()) : layersFor(stack.getItem());
         List<Layer> layers = new ArrayList<>();
+        boolean animated = false;
         if (paths != null) {
-            for (int i = 0; i < paths.size(); i++)
-                layers.add(new Layer(png(paths.get(i)), ToolColorHandler.INSTANCE.getColor(stack, i)));
+            for (int i = 0; i < paths.size(); i++) {
+                MaterialAnimation animation = ToolColorHandler.INSTANCE.getAnimation(stack, i);
+                animated |= animation != null;
+                layers.add(new Layer(png(paths.get(i)), ToolColorHandler.INSTANCE.getColor(stack, i), animation));
+            }
         }
         List<Identifier> overlays = modifierTextures(stack);
         if (layers.isEmpty() && overlays.isEmpty()) return null;
-        return new RenderData(layers, overlays);
+        return new RenderData(layers, overlays, animated ? Util.getMillis() / PHASE_MS : 0L);
     }
 
     private static final float LAYER_STEP = 1f / 2048f;
@@ -248,19 +257,27 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         int sky = packedLight >> 16 & 0xFFFF;
         int block = packedLight & 0xFFFF;
         int depth = 0;
+        float ticks = data.phase() * PHASE_MS / 50f;
+        ToolRenderStyle style = collector instanceof ToolRenderStyle s ? s : null;
+        boolean translucent = style != null && style.translucent();
         poseStack.pushPose();
-        for (Layer layer : data.layers()) {
+        for (int i = 0; i < data.layers().size(); i++) {
+            Layer layer = data.layers().get(i);
+            float lift = depth++ * LAYER_STEP;
+            if (style != null && !style.showLayer(i)) continue;
             boolean[][] pixels = mask(layer.texture());
-            float lift = depth++ * LAYER_STEP;
             int color = layer.color();
-            collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(layer.texture()),
-                    (pose, buf) -> pixelGeometry(buf, pose.pose(), pixels, color, lift, 0f, packedOverlay, sky, block));
+            MaterialAnimation animation = layer.animation();
+            collector.submitCustomGeometry(poseStack, renderType(layer.texture(), translucent),
+                    (pose, buf) -> pixelGeometry(buf, pose.pose(), pixels, color, animation, ticks, style, lift, 0f, packedOverlay, sky, block));
         }
-        for (Identifier texture : data.overlays()) {
-            boolean[][] pixels = mask(texture);
-            float lift = depth++ * LAYER_STEP;
-            collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(texture),
-                    (pose, buf) -> pixelGeometry(buf, pose.pose(), pixels, 0xFFFFFFFF, lift, EDGE, packedOverlay, sky, block));
+        if (style == null || style.showOverlays()) {
+            for (Identifier texture : data.overlays()) {
+                boolean[][] pixels = mask(texture);
+                float lift = depth++ * LAYER_STEP;
+                collector.submitCustomGeometry(poseStack, renderType(texture, translucent),
+                        (pose, buf) -> pixelGeometry(buf, pose.pose(), pixels, 0xFFFFFFFF, null, 0f, style, lift, EDGE, packedOverlay, sky, block));
+            }
         }
         poseStack.popPose();
     }
@@ -269,16 +286,23 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         return x >= 0 && y >= 0 && x < p.length && y < p[x].length && p[x][y];
     }
 
-    private static void pixelGeometry(VertexConsumer buf, Matrix4f m, boolean[][] p, int color, float lift, float grow,
-                                      int overlay, int sky, int block) {
+    private static RenderType renderType(Identifier texture, boolean translucent) {
+        return translucent ? RenderTypes.entityTranslucent(texture) : RenderTypes.entityCutout(texture);
+    }
+
+    private static void pixelGeometry(VertexConsumer buf, Matrix4f m, boolean[][] p, int color,
+                                      @Nullable MaterialAnimation animation, float ticks, @Nullable ToolRenderStyle style,
+                                      float lift, float grow, int overlay, int sky, int block) {
         int w = p.length;
         if (w == 0) return;
         int h = p[0].length;
-        int a = color >>> 24 & 255, r = color >> 16 & 255, g = color >> 8 & 255, b = color & 255;
-        if (a == 0) a = 255;
+        if ((color >>> 24) == 0) color |= 0xFF000000;
         float zf = FRONT_Z + lift, zb = BACK_Z - lift;
         for (int px = 0; px < w; px++) for (int py = 0; py < h; py++) {
             if (!p[px][py]) continue;
+            int c = animation == null ? color : animation.pixel(color, ticks, px, py, w, h);
+            if (style != null) c = style.tint(c);
+            int a = c >>> 24 & 255, r = c >> 16 & 255, g = c >> 8 & 255, b = c & 255;
             float fx0 = (float) px / w, fx1 = (float) (px + 1) / w;
             float fy0 = 1f - (float) (py + 1) / h, fy1 = 1f - (float) py / h;
             float u0 = (px + 0.25f) / w, u1 = (px + 0.75f) / w;

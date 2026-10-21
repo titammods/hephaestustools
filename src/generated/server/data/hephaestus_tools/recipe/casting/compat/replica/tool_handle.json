@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "replication"
+    }
+  ],
+  "type": "hephaestus:casting_table",
+  "cast": "hephaestus_tools:tool_handle_cast",
+  "cast_consumed": false,
+  "cooling_time": 100,
+  "fluid": {
+    "amount": 90,
+    "id": "hephaestus:molten_replica"
+  },
+  "result": {
+    "count": 1,
+    "id": "hephaestus_tools:tool_handle"
+  }
+}

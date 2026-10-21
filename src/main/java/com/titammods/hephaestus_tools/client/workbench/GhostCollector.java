@@ -2,6 +2,7 @@ package com.titammods.hephaestus_tools.client.workbench;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.QuadInstance;
+import com.titammods.hephaestus_tools.client.renderer.ToolRenderStyle;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
@@ -30,7 +31,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-final class GhostCollector implements SubmitNodeCollector {
+final class GhostCollector implements SubmitNodeCollector, ToolRenderStyle {
     private final SubmitNodeCollector delegate;
     private final boolean ghost;
     private final float alpha, red, green, blue;
@@ -58,6 +59,29 @@ final class GhostCollector implements SubmitNodeCollector {
         int tint = quad.materialInfo().tintIndex();
         if (layerMask == -1 || tint < 0 || tint >= 31) return true;
         return (layerMask & (1 << tint)) != 0;
+    }
+
+    @Override
+    public boolean showLayer(int layer) {
+        return layerMask == -1 || layer < 0 || layer >= 31 || (layerMask & (1 << layer)) != 0;
+    }
+
+    @Override
+    public boolean showOverlays() {
+        return layerMask == -1;
+    }
+
+    @Override
+    public int tint(int argb) {
+        if (!ghost) return argb;
+        int r = Math.round(ARGB.red(argb) * red), g = Math.round(ARGB.green(argb) * green), b = Math.round(ARGB.blue(argb) * blue);
+        int a = Math.round((ARGB.alpha(argb) == 0 ? 255 : ARGB.alpha(argb)) * alpha);
+        return ARGB.color(clamp(a), clamp(r), clamp(g), clamp(b));
+    }
+
+    @Override
+    public boolean translucent() {
+        return ghost && alpha < 0.999f;
     }
 
     private static int layerColor(int[] tints, BakedQuad quad) {
