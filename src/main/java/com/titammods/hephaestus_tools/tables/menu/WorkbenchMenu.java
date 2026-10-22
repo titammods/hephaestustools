@@ -231,7 +231,7 @@ public class WorkbenchMenu extends ArsenalTableMenu {
         if (stack.isEmpty()) return false;
         if (isRepair()) {
             if (part != 0 || !ToolStack.isInitialized(tool())) return false;
-            if (stack.getItem() instanceof ToolPartItem) return canSwap(tool(), stack, partIndexFor(tool(), stack));
+            if (stack.getItem() instanceof ToolPartItem) return canSwapAny(tool(), stack);
             return isRepairMaterial(stack);
         }
         return super.accepts(part, stack);
@@ -261,6 +261,11 @@ public class WorkbenchMenu extends ArsenalTableMenu {
         if (tool.isEmpty() || part.isEmpty()) return -1;
         ToolAssembly a = assemblyOf(tool.getItem());
         return a == null ? -1 : a.parts().indexOf(part.getItem());
+    }
+
+    public static boolean canSwapAny(ItemStack tool, ItemStack held) {
+        for (int i = 0; i < 4; i++) if (canSwap(tool, held, i)) return true;
+        return false;
     }
 
     public static boolean canSwap(ItemStack tool, ItemStack held, int index) {

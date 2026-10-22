@@ -324,10 +324,21 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     private int drawerY() { return bagY() + 20 - DRAWER_H - 7; }
 
     private static final int DOCK_H = 22, DOCK_BTN_W = 78, DOCK_GAP = 4, DOCK_PAD = 6;
-    private int dockX() { return cx() - (22 + DOCK_GAP + DOCK_BTN_W) / 2; }
+    private float dockSplitT = 0f;
+    private int dockInnerW() { return 22 + DOCK_GAP + DOCK_BTN_W + Math.round(dockSplitT * (DOCK_BTN_W + DOCK_GAP)); }
+    private int dockX() { return cx() - dockInnerW() / 2; }
     private int dockY() { return height - HOTBAR_H - 12 - DOCK_H; }
     private int dockBtnX() { return dockX() + 22 + DOCK_GAP; }
-    private boolean dockBtnHit(double mx, double my) { return pagesT > 0.05f && in(mx, my, dockBtnX(), dockY(), DOCK_BTN_W, DOCK_H); }
+    private int dockBtnX(int k) { return dockBtnX() + Math.round(k * Math.min(dockSplitT, k) / Math.max(1, k) * (DOCK_BTN_W + DOCK_GAP)); }
+    private boolean dockBtnHit(double mx, double my) { return pagesT > 0.05f && in(mx, my, dockBtnX(), dockY(), dockInnerW() - 22 - DOCK_GAP, DOCK_H); }
+    private boolean dockSplit() { return swapChoices().size() > 1; }
+    private int dockBtnIndex(double mx, double my) {
+        if (pagesT <= 0.05f) return -1;
+        int n = dockSplit() ? swapChoices().size() : 1;
+        if (n > 1 && dockSplitT < n - 1.05f) return -1;
+        for (int k = 0; k < n; k++) if (in(mx, my, dockBtnX(k), dockY(), DOCK_BTN_W, DOCK_H)) return k;
+        return -1;
+    }
     private int invX() { return drawerX() + 1; }
     private int invY() { return drawerY() + 1; }
 
@@ -483,6 +494,9 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         boolean hide = inspect || hideUi || WorkbenchCraft.isBusy();
         pagesT = Mth.clamp(pagesT + (hide ? -1f : 1f) * dt / 0.32f, 0f, 1f);
         for (int i = 0; i < flash.length; i++) flash[i] = Math.max(0f, flash[i] - dt / 0.7f);
+        float split = dockSplit() ? swapChoices().size() - 1 : 0f;
+        dockSplitT += (split - dockSplitT) * Math.min(1f, dt * 12f);
+        if (Math.abs(split - dockSplitT) < 0.002f) dockSplitT = split;
     }
 
     private void drawTabs(GuiGraphicsExtractor g, int mx, int my, boolean activeOnly) {
@@ -500,7 +514,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     private void drawDock(GuiGraphicsExtractor g, int mx, int my) {
         int tab = menu.getActiveTab();
         int sx = dockX(), sy = dockY();
-        g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_DOCK, sx - DOCK_PAD, sy - DOCK_PAD, 22 + DOCK_GAP + DOCK_BTN_W + DOCK_PAD * 2, DOCK_H + DOCK_PAD * 2);
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_DOCK, sx - DOCK_PAD, sy - DOCK_PAD, dockInnerW() + DOCK_PAD * 2, DOCK_H + DOCK_PAD * 2);
         Slot slot = menu.slots.get(tab == 0 ? 5 : 0);
         ItemStack carried = menu.getCarried();
         boolean hover = in(mx, my, sx, sy, 22, 22);
@@ -526,9 +540,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
                 return;
             }
             if (menu.isRepair() && menu.input(0).getItem() instanceof ToolPartItem) {
-                boolean ok = buildSwapIndex() >= 0;
-                readyButton(g, bx, sy, bw, DOCK_H, ok, ok && bh, tr("swap_part"));
-                tip(bx, sy, bw, DOCK_H, tr(ok ? "swap_part_hint" : "swap_same"));
+                drawSwapButtons(g, mx, my, sy);
                 return;
             }
             if (menu.isRepair() && !done) return;
@@ -537,17 +549,49 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         } else if (tab == 1) {
             if (!toolReady()) { readyButton(g, bx, sy, bw, DOCK_H, false, false, tr("install_modifier")); return; }
             ItemStack staged = menu.input(0);
-            int pi = stagedPart();
             ToolUpgrade su = stagedUpgrade();
             boolean isPart = staged.getItem() instanceof ToolPartItem;
-            boolean ok = !staged.isEmpty() && (isPart || stagedAttached()) && (isPart ? pi >= 0 && WorkbenchMenu.canSwap(menu.tool(), staged, pi)
-                    : su != null && minecraft.player != null && ToolUpgrades.canApply(minecraft.player, menu.tool(), su) && morphReady());
+            if (isPart) {
+                drawSwapButtons(g, mx, my, sy);
+                return;
+            }
+            boolean ok = !staged.isEmpty() && stagedAttached()
+                    && su != null && minecraft.player != null && ToolUpgrades.canApply(minecraft.player, menu.tool(), su) && morphReady();
             int slv = su == null ? 0 : ToolUpgrades.currentLevel(menu.tool(), su);
             readyButton(g, bx, sy, bw, DOCK_H, ok, ok && bh, tr(isPart ? "swap_part" : slv > 0 ? "upgrade_modifier" : "install_modifier"));
         } else {
             boolean can = toolReady() && !masteryChosen() && canChoose();
             readyButton(g, bx, sy, bw, DOCK_H, can, can && bh, tr("select_mastery"));
             if (toolReady() && !masteryChosen() && !canChoose()) tip(bx, sy, bw, DOCK_H, trArgs("mastery_need_level", MasteryLevel.T1));
+        }
+    }
+
+    private void drawSwapButtons(GuiGraphicsExtractor g, int mx, int my, int sy) {
+        List<Integer> choices = swapChoices();
+        if (choices.size() <= 1) {
+            boolean ok = choices.size() == 1;
+            int bx = dockBtnX();
+            boolean bh = in(mx, my, bx, sy, DOCK_BTN_W, DOCK_H);
+            readyButton(g, bx, sy, DOCK_BTN_W, DOCK_H, ok, ok && bh, tr("swap_part"));
+            tip(bx, sy, DOCK_BTN_W, DOCK_H, tr(ok ? "swap_part_hint" : "swap_same"));
+            return;
+        }
+        ItemStack tool = swapTool();
+        var materials = ToolStack.getMaterials(tool);
+        boolean settled = dockSplitT >= choices.size() - 1.05f;
+        int hovered = dockBtnIndex(mx, my);
+        for (int k = choices.size() - 1; k >= 0; k--) {
+            int bx = dockBtnX(k), index = choices.get(k);
+            Component label = tr("swap_part").copy().append(" " + (k + 1));
+            readyButton(g, bx, sy, DOCK_BTN_W, DOCK_H, true, settled && hovered == k, label);
+            if (!settled) continue;
+            ItemStack partStack = new ItemStack(menu.input(0).getItem());
+            List<Component> lines = new ArrayList<>();
+            lines.add(label);
+            if (index < materials.size()) lines.add(partStack.getHoverName().copy().append(" (")
+                    .append(Component.translatable(materials.get(index).translationKey())).append(")").withStyle(ChatFormatting.GRAY));
+            lines.add(tr("swap_part_hint"));
+            tip(bx, sy, DOCK_BTN_W, DOCK_H, lines.toArray(Component[]::new));
         }
     }
 
@@ -649,7 +693,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             if (empty && !need.isEmpty()) ghostItem(g, need, x + 3, ry + 3, .4f);
             else if (!empty) g.item(staged, x + 3, ry + 3);
             text(g, !empty ? staged.getHoverName() : need.isEmpty() ? tr("repair") : need.getHoverName(), x + 27, ry + 2, w - 27, .72f, INK);
-            boolean ok = part ? buildSwapIndex() >= 0 : canRepairNow();
+            boolean ok = part ? !swapChoices().isEmpty() : canRepairNow();
             int needed = menu.repairUnitsNeeded(menu.output());
             Component second = empty ? (needed > 0 ? tr("repair_drop").copy().append(" (" + needed + ")") : tr("repair_full"))
                     : part ? tr(ok ? "swap_ready" : "swap_same")
@@ -996,9 +1040,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             }
         } else {
             boolean isPart = staged.getItem() instanceof ToolPartItem;
-            int pi = stagedPart();
             ToolUpgrade su = stagedUpgrade();
-            boolean ok = isPart ? pi >= 0 && WorkbenchMenu.canSwap(menu.tool(), staged, pi)
+            boolean ok = isPart ? !swapChoices().isEmpty()
                     : su != null && minecraft.player != null && ToolUpgrades.canApply(minecraft.player, menu.tool(), su);
             if (ok && !isPart && !stagedAttached()) wrapped(g, tr("drag_staged_hint"), x, hy, w, .56f, INK_BLUE, 3);
             else wrapped(g, tr(ok ? "press_button" : isPart ? "swap_same" : "staged_cant"), x, hy, w, .56f, ok ? INK_GREEN : INK_RED, 3);
@@ -1060,11 +1103,6 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         }
         if (shown == 0) { text(g, tr("effect_special"), x, y, w, .56f, INK2); y += 10; }
         return y;
-    }
-
-    private int stagedPart() {
-        ItemStack st = menu.input(0);
-        return st.isEmpty() || !(st.getItem() instanceof ToolPartItem) ? -1 : WorkbenchMenu.partIndexFor(menu.tool(), st);
     }
 
     private ToolUpgrade stagedUpgrade() {
@@ -1345,7 +1383,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         if (my > height - HOTBAR_H - 2) return false;
         if (in(mx, my, bagX(), bagY(), 20, 20)) return false;
         if (inspect) return true;
-        if (pagesT > 0.05f && in(mx, my, dockX() - DOCK_PAD, dockY() - DOCK_PAD, 22 + DOCK_GAP + DOCK_BTN_W + DOCK_PAD * 2, DOCK_H + DOCK_PAD * 2)) return false;
+        if (pagesT > 0.05f && in(mx, my, dockX() - DOCK_PAD, dockY() - DOCK_PAD, dockInnerW() + DOCK_PAD * 2, DOCK_H + DOCK_PAD * 2)) return false;
         if (pagesT > 0.05f) {
             if (in(mx, my, lpX() - 6, lTop() - 22, pageW() + 12, leftPageH() + 26)) return false;
             if (showRight() && in(mx, my, rpX() - 6, rTop() - 6, pageW() + 12, rightPageH() + 10)) return false;
@@ -1444,8 +1482,8 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
                 return true;
             }
             if (menu.isRepair() && menu.input(0).getItem() instanceof ToolPartItem) {
-                int pi = buildSwapIndex();
-                if (pi >= 0) startSwap(pi); else denied();
+                int pi = clickedSwapIndex(mx, my);
+                if (pi >= 0) startSwap(pi); else if (pi == -1) denied();
                 return true;
             }
             if (readyToCraft()) { startCraft(); return true; }
@@ -1512,9 +1550,11 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             if (fillModY >= 0 && canFillModifier() && in(mx, my, x, fillModY, w, 12)) { fillModifier(); return true; }
             if (!menu.input(0).isEmpty() && dockBtnHit(mx, my)) {
                 if (!(menu.input(0).getItem() instanceof ToolPartItem) && !stagedAttached()) { denied(); return true; }
-                int pi = stagedPart();
                 ToolUpgrade up = stagedUpgrade();
-                if (pi >= 0 && WorkbenchMenu.canSwap(menu.tool(), menu.input(0), pi)) startSwap(pi);
+                if (menu.input(0).getItem() instanceof ToolPartItem) {
+                    int pi = clickedSwapIndex(mx, my);
+                    if (pi >= 0) startSwap(pi); else if (pi == -1) denied();
+                }
                 else if (up != null && minecraft.player != null && morphReady() && ToolUpgrades.canApply(minecraft.player, menu.tool(), up)) applyUpgrade(up);
                 else denied();
                 return true;
@@ -2262,10 +2302,30 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         click();
     }
 
+    private ItemStack swapTool() {
+        return menu.getActiveTab() == 0 ? menu.output() : menu.tool();
+    }
+
+    private List<Integer> swapChoices() {
+        ItemStack staged = menu.input(0), tool = swapTool();
+        if (staged.isEmpty() || !(staged.getItem() instanceof ToolPartItem) || tool.isEmpty()) return List.of();
+        if (menu.getActiveTab() == 0 && !menu.isRepair()) return List.of();
+        if (menu.getActiveTab() > 1) return List.of();
+        List<Integer> out = new ArrayList<>(2);
+        for (int i = 0; i < 4; i++) if (WorkbenchMenu.canSwap(tool, staged, i)) out.add(i);
+        return out;
+    }
+
     private int buildSwapIndex() {
-        ItemStack staged = menu.input(0), tool = menu.output();
-        int pi = WorkbenchMenu.partIndexFor(tool, staged);
-        return pi >= 0 && WorkbenchMenu.canSwap(tool, staged, pi) ? pi : -1;
+        List<Integer> choices = swapChoices();
+        return choices.size() == 1 ? choices.getFirst() : -1;
+    }
+
+    private int clickedSwapIndex(double mx, double my) {
+        List<Integer> choices = swapChoices();
+        if (choices.size() <= 1) return choices.isEmpty() ? -1 : choices.getFirst();
+        int k = dockBtnIndex(mx, my);
+        return k >= 0 && k < choices.size() ? choices.get(k) : -2;
     }
 
     private boolean canRepairNow() {
@@ -2381,9 +2441,10 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             if (WorkbenchAssembly.endDrag() && d >= 0) {
                 WorkbenchAssembly.attachFx(menu.input(d));
                 if (menu.getActiveTab() == 0 && menu.isRepair() && d == 0 && menu.input(0).getItem() instanceof ToolPartItem) {
-                    int pi = buildSwapIndex();
-                    if (pi >= 0) send(WorkbenchMenu.SWAP_BASE + pi);
-                    else { WorkbenchAssembly.release(0); denied(); }
+                    List<Integer> choices = swapChoices();
+                    if (choices.size() == 1) send(WorkbenchMenu.SWAP_BASE + choices.getFirst());
+                    else if (choices.isEmpty()) { WorkbenchAssembly.release(0); denied(); }
+                    else click();
                 }
             }
             return true;
