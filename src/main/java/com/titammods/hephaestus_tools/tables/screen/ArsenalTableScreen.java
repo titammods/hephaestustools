@@ -337,6 +337,15 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
                     text(g, traitName.copy().append(" - ").append(materialName), 300, traitY, 74, .52f, C_LABEL);
             }
         }
+        Component toolName = new ItemStack(details.getItem()).getHoverName();
+        for (var trait : ToolTraits.ofTool(details.getItem())) {
+            Component traitName = ToolTooltipBuilder.traitName(trait);
+            traitDetails.add(traitName.copy().append(" - ").append(toolName));
+            int traitY = (menu.getActiveTab() == 0 ? 133 : 127) + (traitDetails.size() - 1) * 7;
+            int bottom = LATERAL_Y + (menu.getActiveTab() == 0 ? statsHeight() : (expandedLeftStats ? 128 : 107)) - 15;
+            if (traitDetails.size() <= 4 && traitY + Math.ceil(font.lineHeight * .52f) <= bottom)
+                text(g, traitName.copy().append(" - ").append(toolName), 300, traitY, 74, .52f, C_LABEL);
+        }
         if (traitDetails.isEmpty()) text(g, tr("no_traits"), 300, menu.getActiveTab() == 0 ? 133 : 127, 74, .6f, C_HINT);
     }
 

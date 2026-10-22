@@ -1,0 +1,6 @@
+{
+  "tool": "hephaestus_tools:cleaver",
+  "traits": [
+    { "id": "beheading" }
+  ]
+}

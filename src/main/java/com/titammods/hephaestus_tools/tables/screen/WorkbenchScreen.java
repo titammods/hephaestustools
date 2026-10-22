@@ -831,6 +831,25 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             tip(x, top - 1, w, y - top, lines.toArray(Component[]::new));
             y += PART_GAP;
         }
+        var toolTraits = ToolTraits.ofTool(details.getItem());
+        if (!toolTraits.isEmpty()) {
+            int top = y;
+            ItemStack toolStack = new ItemStack(details.getItem());
+            Component toolName = toolStack.getHoverName();
+            g.item(details, x, y + 1);
+            text(g, toolName, x + 20, y, w - 20, PART_NAME_SCALE, INK);
+            int bottom = wrapped(g, partTraitLine(toolTraits), x + 20, y + 9, w - 20, PART_TRAIT_SCALE, INK_ORANGE, PART_TRAIT_LINES);
+            List<Component> lines = new ArrayList<>();
+            lines.add(toolName);
+            for (var trait : toolTraits) {
+                lines.add(ToolTooltipBuilder.traitName(trait).copy().withStyle(ChatFormatting.GOLD));
+                lines.add(Component.translatable(ToolTraits.descriptionKey(trait.id())));
+            }
+            y = Math.max(bottom, y + PART_ICON_H) + 2;
+            measure(y);
+            tip(x, top - 1, w, y - top, lines.toArray(Component[]::new));
+            y += PART_GAP;
+        }
         return y;
     }
 
@@ -1796,6 +1815,13 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
                 traitDetails.add(traitName.copy().append(" - ").append(materialName).append(" (").append(partName).append(")"));
                 traitRows.add(new Component[] {traitName, traitDesc, materialName});
             }
+        }
+        Component toolName = new ItemStack(details.getItem()).getHoverName();
+        for (var trait : ToolTraits.ofTool(details.getItem())) {
+            Component traitName = ToolTooltipBuilder.traitName(trait);
+            Component traitDesc = Component.translatable(ToolTraits.descriptionKey(trait.id()));
+            traitDetails.add(traitName.copy().append(" - ").append(toolName));
+            traitRows.add(new Component[] {traitName, traitDesc, toolName});
         }
     }
 

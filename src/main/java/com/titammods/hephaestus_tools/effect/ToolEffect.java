@@ -3,8 +3,10 @@ package com.titammods.hephaestus_tools.effect;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.titammods.hephaestus_tools.tools.modifier.ModifierStatContext;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -27,6 +29,8 @@ public interface ToolEffect {
     }
 
     default void afterHit(EffectContext context, HitDetails hit, int level) {}
+
+    default void modifyKillDrops(EffectContext context, LivingEntity victim, Collection<ItemEntity> drops, int level) {}
 
     default int modifyWear(EffectContext context, int amount, WearCause cause, int level) {
         return amount;

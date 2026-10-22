@@ -91,10 +91,21 @@ public final class ToolTraits {
                 levels.merge(trait.id(), trait.level(), Integer::sum);
             }
         }
+        for (TraitEntry trait : ToolTraitManager.getInstance().get(tool)) levels.merge(trait.id(), trait.level(), Integer::sum);
         TraitManager traits = TraitManager.getInstance();
         levels.forEach((id, level) -> traits.get(id).ifPresent(definition ->
                 out.add(new TraitInstance(id, definition, Math.min(level, definition.maxLevel())))));
         return List.copyOf(out);
+    }
+
+    public static List<TraitInstance> ofTool(Item tool) {
+        Map<Identifier, Integer> levels = new LinkedHashMap<>();
+        for (TraitEntry trait : ToolTraitManager.getInstance().get(tool)) levels.merge(trait.id(), trait.level(), Integer::sum);
+        TraitManager traits = TraitManager.getInstance();
+        List<TraitInstance> out = new ArrayList<>();
+        levels.forEach((id, level) -> traits.get(id).ifPresent(definition ->
+                out.add(new TraitInstance(id, definition, Math.min(level, definition.maxLevel())))));
+        return out;
     }
 
     private static int hash(List<TraitInstance> collected) {

@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,6 +53,12 @@ public final class ToolEffects {
         if (!ToolStack.isUsable(tool)) return;
         EffectContext context = EffectContext.attacking(attacker, tool, target);
         for (ActiveEffect active : collect(tool)) active.effect().afterHit(context, hit, active.level());
+    }
+
+    public static void modifyKillDrops(LivingEntity killer, LivingEntity victim, ItemStack tool, Collection<ItemEntity> drops) {
+        if (!ToolStack.isUsable(tool)) return;
+        EffectContext context = EffectContext.attacking(killer, tool, victim);
+        for (ActiveEffect active : collect(tool)) active.effect().modifyKillDrops(context, victim, drops, active.level());
     }
 
     public static int modifyWear(LivingEntity holder, ItemStack tool, int amount, WearCause cause) {

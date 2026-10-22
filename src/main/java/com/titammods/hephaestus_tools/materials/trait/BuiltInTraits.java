@@ -16,6 +16,7 @@ import com.titammods.hephaestus_tools.effect.scales.TargetArmorScale;
 import com.titammods.hephaestus_tools.effect.scales.WearScale;
 import com.titammods.hephaestus_tools.effect.types.BonusDamageEffect;
 import com.titammods.hephaestus_tools.effect.types.BreakSpeedEffect;
+import com.titammods.hephaestus_tools.effect.types.BeheadEffect;
 import com.titammods.hephaestus_tools.effect.types.IndestructibleEffect;
 import com.titammods.hephaestus_tools.effect.types.PullItemsEffect;
 import com.titammods.hephaestus_tools.effect.types.RepairEffect;
@@ -69,7 +70,20 @@ public final class BuiltInTraits {
                 new BreakSpeedEffect(EffectOperation.ADD, ScaledAmount.scaled(4.0f, new ColdScale(0.75f))),
                 new BonusDamageEffect(EffectOperation.ADD, ScaledAmount.scaled(1.5f, new ColdScale(0.75f))));
         add(out, "unbreakable", IndestructibleEffect.INSTANCE);
+        add(out, "beheading", new BeheadEffect(LevelValue.of(0.25f), beheadingHeads(), true));
         return out;
+    }
+
+    private static Map<Identifier, Identifier> beheadingHeads() {
+        Map<Identifier, Identifier> heads = new LinkedHashMap<>();
+        for (String mob : List.of("zombie", "husk", "drowned", "zombie_villager")) heads.put(Identifier.withDefaultNamespace(mob), Identifier.withDefaultNamespace("zombie_head"));
+        for (String mob : List.of("skeleton", "stray", "bogged", "parched")) heads.put(Identifier.withDefaultNamespace(mob), Identifier.withDefaultNamespace("skeleton_skull"));
+        heads.put(Identifier.withDefaultNamespace("wither_skeleton"), Identifier.withDefaultNamespace("wither_skeleton_skull"));
+        heads.put(Identifier.withDefaultNamespace("creeper"), Identifier.withDefaultNamespace("creeper_head"));
+        heads.put(Identifier.withDefaultNamespace("piglin"), Identifier.withDefaultNamespace("piglin_head"));
+        heads.put(Identifier.withDefaultNamespace("piglin_brute"), Identifier.withDefaultNamespace("piglin_head"));
+        heads.put(Identifier.withDefaultNamespace("ender_dragon"), Identifier.withDefaultNamespace("dragon_head"));
+        return heads;
     }
 
     private static void add(Map<Identifier, TraitDefinition> out, String path, ToolEffect... effects) {

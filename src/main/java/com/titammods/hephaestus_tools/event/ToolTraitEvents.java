@@ -11,6 +11,7 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
 import net.neoforged.neoforge.event.entity.player.CriticalHitEvent;
@@ -54,6 +55,13 @@ public class ToolTraitEvents {
         HitDetails hit = new HitDetails(event.getHealthDamage(), ToolCombat.isCritical(target, event.getSource()),
                 attacker.getAttackStrengthScale(0.5f));
         ToolEffects.afterHit(attacker, target, tool, hit);
+    }
+
+    @SubscribeEvent
+    public static void onLivingDrops(LivingDropsEvent event) {
+        if (!(event.getSource().getEntity() instanceof Player killer) || event.getSource().getDirectEntity() != killer) return;
+        if (killer.level().isClientSide()) return;
+        ToolEffects.modifyKillDrops(killer, event.getEntity(), killer.getMainHandItem(), event.getDrops());
     }
 
     @SubscribeEvent

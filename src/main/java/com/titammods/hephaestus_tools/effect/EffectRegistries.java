@@ -12,6 +12,7 @@ import com.titammods.hephaestus_tools.effect.scales.TargetArmorScale;
 import com.titammods.hephaestus_tools.effect.scales.WearScale;
 import com.titammods.hephaestus_tools.effect.types.BonusDamageEffect;
 import com.titammods.hephaestus_tools.effect.types.BreakSpeedEffect;
+import com.titammods.hephaestus_tools.effect.types.BeheadEffect;
 import com.titammods.hephaestus_tools.effect.types.IndestructibleEffect;
 import com.titammods.hephaestus_tools.effect.types.PullItemsEffect;
 import com.titammods.hephaestus_tools.effect.types.RepairEffect;
@@ -48,6 +49,7 @@ public final class EffectRegistries {
     public static final Supplier<MapCodec<BonusDamageEffect>> BONUS_DAMAGE = EFFECT_TYPES.register("bonus_damage", () -> BonusDamageEffect.CODEC);
     public static final Supplier<MapCodec<RepairEffect>> REPAIR_OVER_TIME = EFFECT_TYPES.register("repair_over_time", () -> RepairEffect.CODEC);
     public static final Supplier<MapCodec<PullItemsEffect>> PULL_ITEMS = EFFECT_TYPES.register("pull_items", () -> PullItemsEffect.CODEC);
+    public static final Supplier<MapCodec<BeheadEffect>> BEHEAD = EFFECT_TYPES.register("behead", () -> BeheadEffect.CODEC);
     public static final Supplier<MapCodec<IndestructibleEffect>> INDESTRUCTIBLE = EFFECT_TYPES.register("indestructible", () -> IndestructibleEffect.CODEC);
 
     public static final Supplier<MapCodec<DepthScale>> DEPTH = SCALE_TYPES.register("depth", () -> DepthScale.CODEC);

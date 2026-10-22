@@ -1,0 +1,23 @@
+{
+  "effects": [
+    {
+      "type": "hephaestus_tools:behead",
+      "chance": 0.25,
+      "heads": {
+        "minecraft:bogged": "minecraft:skeleton_skull",
+        "minecraft:creeper": "minecraft:creeper_head",
+        "minecraft:drowned": "minecraft:zombie_head",
+        "minecraft:ender_dragon": "minecraft:dragon_head",
+        "minecraft:husk": "minecraft:zombie_head",
+        "minecraft:parched": "minecraft:skeleton_skull",
+        "minecraft:piglin": "minecraft:piglin_head",
+        "minecraft:piglin_brute": "minecraft:piglin_head",
+        "minecraft:skeleton": "minecraft:skeleton_skull",
+        "minecraft:stray": "minecraft:skeleton_skull",
+        "minecraft:wither_skeleton": "minecraft:wither_skeleton_skull",
+        "minecraft:zombie": "minecraft:zombie_head",
+        "minecraft:zombie_villager": "minecraft:zombie_head"
+      }
+    }
+  ]
+}
