@@ -3,6 +3,7 @@ package com.titammods.hephaestus_tools.registry;
 import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.tables.blockentity.ArsenalTableBlockEntity;
 import com.titammods.hephaestus_tools.tables.menu.ArsenalTableMenu;
+import com.titammods.hephaestus_tools.tables.menu.ForgeStorageMenu;
 import com.titammods.hephaestus_tools.tables.menu.WorkbenchMenu;
 import com.titammods.hephaestus_tools.tables.scene.WorkbenchOrigin;
 import net.minecraft.core.BlockPos;
@@ -42,6 +43,15 @@ public class ModMenus {
                             return new WorkbenchMenu(id, playerInv, arsenal, origin);
                         }
                         return null;
+                    })
+            );
+
+    public static final Supplier<MenuType<ForgeStorageMenu>> FORGE_STORAGE =
+            MENUS.register("forge_storage",
+                    () -> IMenuTypeExtension.create((id, playerInv, buf) -> {
+                        BlockPos pos = buf.readBlockPos();
+                        BlockEntity be = playerInv.player.level().getBlockEntity(pos);
+                        return new ForgeStorageMenu(id, playerInv, be instanceof ArsenalTableBlockEntity arsenal ? arsenal : null);
                     })
             );
 }

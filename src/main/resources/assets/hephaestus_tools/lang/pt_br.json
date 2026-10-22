@@ -26,6 +26,7 @@
   "item.hephaestus_tools.tool_binding": "Encaixe de Ferramenta",
   "item.hephaestus_tools.tough_binding": "Encaixe Reforçado",
   "item.hephaestus_tools.pattern": "Molde",
+  "item.hephaestus_tools.forge_key": "Chave da Forja",
   "gui.hephaestus_tools.tinkers_anvil": "Bigorna do Ferreiro",
   "gui.hephaestus_tools.part_builder": "Construtor de Partes",
   "tooltip.hephaestus_tools.no_material": "Nenhum material definido",

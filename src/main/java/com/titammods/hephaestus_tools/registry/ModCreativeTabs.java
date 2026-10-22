@@ -77,6 +77,7 @@ public class ModCreativeTabs {
                             }
                         }
                         output.accept(ModItems.PATTERN.get());
+                        output.accept(ModItems.FORGE_KEY.get());
                         for (var cast : ModItems.CASTS) output.accept(cast.get());
                         output.accept(ModBlocks.ARSENAL_TABLE.get());
                     })

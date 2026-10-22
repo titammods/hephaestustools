@@ -84,7 +84,7 @@ public class ModItemModelProvider implements DataProvider {
             "small_blade", "large_blade", "tool_handle", "tough_handle", "tool_binding", "tough_binding");
 
     private static final List<String> PLAIN_ITEMS = List.of(
-            "pattern",
+            "pattern", "forge_key",
             "pick_head_cast", "hammer_head_cast", "small_axe_head_cast", "broad_axe_head_cast",
             "adze_head_cast", "large_plate_cast", "small_blade_cast", "large_blade_cast",
             "tool_handle_cast", "tough_handle_cast", "tool_binding_cast", "tough_binding_cast");

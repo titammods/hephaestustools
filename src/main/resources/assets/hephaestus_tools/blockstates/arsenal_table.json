@@ -1,12 +1,58 @@
 {
   "variants": {
-    "part=main,facing=north": { "model": "hephaestus_tools:block/forging_table" },
-    "part=main,facing=east":  { "model": "hephaestus_tools:block/forging_table", "y": 90 },
-    "part=main,facing=south": { "model": "hephaestus_tools:block/forging_table", "y": 180 },
-    "part=main,facing=west":  { "model": "hephaestus_tools:block/forging_table", "y": 270 },
-    "part=second,facing=north": { "model": "hephaestus_tools:block/arsenal_table_empty" },
-    "part=second,facing=east":  { "model": "hephaestus_tools:block/arsenal_table_empty" },
-    "part=second,facing=south": { "model": "hephaestus_tools:block/arsenal_table_empty" },
-    "part=second,facing=west":  { "model": "hephaestus_tools:block/arsenal_table_empty" }
+    "part=main,facing=north,open=false": {
+      "model": "hephaestus_tools:block/forging_table"
+    },
+    "part=main,facing=north,open=true": {
+      "model": "hephaestus_tools:block/forging_table_open"
+    },
+    "part=main,facing=east,open=false": {
+      "model": "hephaestus_tools:block/forging_table",
+      "y": 90
+    },
+    "part=main,facing=east,open=true": {
+      "model": "hephaestus_tools:block/forging_table_open",
+      "y": 90
+    },
+    "part=main,facing=south,open=false": {
+      "model": "hephaestus_tools:block/forging_table",
+      "y": 180
+    },
+    "part=main,facing=south,open=true": {
+      "model": "hephaestus_tools:block/forging_table_open",
+      "y": 180
+    },
+    "part=main,facing=west,open=false": {
+      "model": "hephaestus_tools:block/forging_table",
+      "y": 270
+    },
+    "part=main,facing=west,open=true": {
+      "model": "hephaestus_tools:block/forging_table_open",
+      "y": 270
+    },
+    "part=second,facing=north,open=false": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=north,open=true": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=east,open=false": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=east,open=true": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=south,open=false": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=south,open=true": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=west,open=false": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    },
+    "part=second,facing=west,open=true": {
+      "model": "hephaestus_tools:block/arsenal_table_empty"
+    }
   }
 }

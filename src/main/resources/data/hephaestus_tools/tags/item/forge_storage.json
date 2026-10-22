@@ -1,0 +1,49 @@
+{
+  "values": [
+    "hephaestus_tools:pattern",
+    "hephaestus_tools:pick_head_cast",
+    "hephaestus_tools:hammer_head_cast",
+    "hephaestus_tools:small_axe_head_cast",
+    "hephaestus_tools:broad_axe_head_cast",
+    "hephaestus_tools:adze_head_cast",
+    "hephaestus_tools:large_plate_cast",
+    "hephaestus_tools:small_blade_cast",
+    "hephaestus_tools:large_blade_cast",
+    "hephaestus_tools:tool_handle_cast",
+    "hephaestus_tools:tough_handle_cast",
+    "hephaestus_tools:tool_binding_cast",
+    "hephaestus_tools:tough_binding_cast",
+    {
+      "id": "hephaestus:blank_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:coin_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:gear_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:gem_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:ingot_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:nugget_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:plate_cast",
+      "required": false
+    },
+    {
+      "id": "hephaestus:rod_cast",
+      "required": false
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -98,6 +99,7 @@ public class ModItems {
     public static final DeferredItem<ToolPartItem> TOUGH_BINDING   = part("tough_binding", 2);
 
     public static final DeferredItem<Item> PATTERN = stackable("pattern", 64);
+    public static final DeferredItem<Item> FORGE_KEY = ITEMS.register("forge_key", k -> new Item(plainProps(k).stacksTo(1).rarity(Rarity.UNCOMMON)));
 
     public static final DeferredItem<Item> PICK_HEAD_CAST      = simple("pick_head_cast");
     public static final DeferredItem<Item> HAMMER_HEAD_CAST    = simple("hammer_head_cast");

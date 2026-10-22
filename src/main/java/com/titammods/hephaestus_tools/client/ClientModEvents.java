@@ -9,6 +9,7 @@ import com.titammods.hephaestus_tools.client.workbench.WorkbenchPlayerAnim;
 import com.titammods.hephaestus_tools.registry.ModBlocks;
 import com.titammods.hephaestus_tools.registry.ModMenus;
 import com.titammods.hephaestus_tools.tables.screen.ArsenalTableScreen;
+import com.titammods.hephaestus_tools.tables.screen.ForgeStorageScreen;
 import com.titammods.hephaestus_tools.tables.screen.WorkbenchScreen;
 import com.titammods.hephaestus_tools.tools.helper.ToolEnchantments;
 import com.titammods.hephaestus_tools.tools.item.ModifiableItem;
@@ -46,6 +47,7 @@ public class ClientModEvents {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.ARSENAL_TABLE.get(), ArsenalTableScreen::new);
         event.register(ModMenus.WORKBENCH.get(), WorkbenchScreen::new);
+        event.register(ModMenus.FORGE_STORAGE.get(), ForgeStorageScreen::new);
     }
 
     @SubscribeEvent
