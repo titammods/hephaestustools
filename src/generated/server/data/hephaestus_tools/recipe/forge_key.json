@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/gold",
+    "#c:nuggets/gold",
+    "minecraft:tripwire_hook"
+  ],
+  "result": {
+    "count": 1,
+    "id": "hephaestus_tools:forge_key"
+  }
+}

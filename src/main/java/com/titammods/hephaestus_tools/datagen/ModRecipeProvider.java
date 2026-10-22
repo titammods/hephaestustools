@@ -52,6 +52,7 @@ public class ModRecipeProvider implements DataProvider {
 
         futures.add(DataProvider.saveStable(cache, arsenalTable(), recipePath.json(id("arsenal_table"))));
         futures.add(DataProvider.saveStable(cache, pattern(), recipePath.json(id("pattern"))));
+        futures.add(DataProvider.saveStable(cache, forgeKey(), recipePath.json(id("forge_key"))));
 
         return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
     }
@@ -86,6 +87,26 @@ public class ModRecipeProvider implements DataProvider {
         key.addProperty("m", "#c:rods/wooden");
         key.addProperty("s", "#minecraft:planks");
         return shaped(List.of("ms", "sm"), key, PATTERN, 1);
+    }
+
+    private JsonObject forgeKey() {
+        return shapeless(List.of("#c:ingots/gold", "#c:nuggets/gold", "minecraft:tripwire_hook"), NS + ":forge_key", 1);
+    }
+
+    private static JsonObject shapeless(List<String> ingredients, String result, int count) {
+        JsonObject json = new JsonObject();
+        json.addProperty("type", "minecraft:crafting_shapeless");
+        json.addProperty("category", "misc");
+
+        JsonArray list = new JsonArray();
+        for (String ingredient : ingredients) list.add(ingredient);
+        json.add("ingredients", list);
+
+        JsonObject out = new JsonObject();
+        out.addProperty("id", result);
+        out.addProperty("count", count);
+        json.add("result", out);
+        return json;
     }
 
     private static JsonObject shaped(List<String> rows, JsonObject key, String result, int count) {
