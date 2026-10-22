@@ -4,24 +4,29 @@ import com.titammods.hephaestus_tools.api.event.ToolTraitTooltipEvent;
 import com.titammods.hephaestus_tools.effect.ItemUse;
 import com.titammods.hephaestus_tools.effect.ToolEffects;
 import com.titammods.hephaestus_tools.effect.WearCause;
-import com.titammods.hephaestus_tools.materials.MaterialId;
 import com.titammods.hephaestus_tools.event.MasteryEvents;
 import com.titammods.hephaestus_tools.event.MasteryInteract;
-import com.titammods.hephaestus_tools.materials.trait.ToolTraits;
+import com.titammods.hephaestus_tools.materials.MaterialId;
 import com.titammods.hephaestus_tools.materials.trait.ToolTraits.TraitInstance;
+import com.titammods.hephaestus_tools.materials.trait.ToolTraits;
 import com.titammods.hephaestus_tools.registry.ModComponents;
 import com.titammods.hephaestus_tools.table.ToolXp;
 import com.titammods.hephaestus_tools.tools.aoe.PlayerBlockBreaks;
-import com.titammods.hephaestus_tools.tools.helper.ToolTooltipBuilder;
 import com.titammods.hephaestus_tools.tools.helper.ToolDurability;
 import com.titammods.hephaestus_tools.tools.helper.ToolEnchantments;
+import com.titammods.hephaestus_tools.tools.helper.ToolTooltipBuilder;
+import com.titammods.hephaestus_tools.tools.nbt.ToolConstructionData;
 import com.titammods.hephaestus_tools.tools.nbt.ToolPropertiesData;
 import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import com.titammods.hephaestus_tools.tools.stat.ToolStats;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -54,11 +59,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -121,6 +129,29 @@ public abstract class ModifiableItem extends Item {
     @Override
     public int getDamage(ItemStack stack) {
         return ToolStack.getCurrentDamage(stack);
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return !newStack.is(oldStack.getItem()) || !sameIgnoringWear(oldStack, newStack);
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        if (slotChanged || !newStack.is(oldStack.getItem())) return oldStack != newStack;
+        return !sameIgnoringWear(oldStack, newStack);
+    }
+
+    private static boolean sameIgnoringWear(ItemStack a, ItemStack b) {
+        DataComponentMap ca = a.getComponents(), cb = b.getComponents();
+        Set<DataComponentType<?>> keys = new HashSet<>(ca.keySet());
+        keys.addAll(cb.keySet());
+        keys.remove(DataComponents.DAMAGE);
+        keys.remove(ModComponents.TOOL_CONSTRUCTION.get());
+        for (DataComponentType<?> key : keys) if (!Objects.equals(ca.get(key), cb.get(key))) return false;
+        ToolConstructionData da = a.get(ModComponents.TOOL_CONSTRUCTION.get()), db = b.get(ModComponents.TOOL_CONSTRUCTION.get());
+        if (da == null || db == null) return da == db;
+        return da.broken() == db.broken() && da.withDamage(0).equals(db.withDamage(0));
     }
 
     @Override
