@@ -81,7 +81,7 @@ public final class ToolUpgrades {
         REGISTRY.add(new ToolUpgrade(ModifierEffects.SHARPNESS, "upgrade.hephaestus_tools.sharpness",
                 EnumSet.of(ToolRole.COMBAT), 10, Items.DIAMOND, 2, icon("upgrades/damage.png")));
         REGISTRY.add(new ToolUpgrade(ModifierEffects.LOOTING, "upgrade.hephaestus_tools.looting",
-                EnumSet.of(ToolRole.COMBAT), 3, Items.EMERALD, 4, icon("upgrades/critical.png")));
+                EnumSet.of(ToolRole.COMBAT), 10, Items.EMERALD, 4, icon("upgrades/critical.png")));
         REGISTRY.add(new ToolUpgrade(ModifierEffects.SILK_TOUCH, "modifier.hephaestus_tools.silk_touch",
                 EnumSet.of(ToolRole.MINING, ToolRole.HARVEST), 1, Items.ECHO_SHARD, 6, icon("upgrades/reach.png")));
         REGISTRY.add(new ToolUpgrade(ModifierEffects.FLAME, "modifier.hephaestus_tools.flame",
