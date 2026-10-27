@@ -171,9 +171,9 @@ public final class MasteryEvents {
                 if (lv >= 30) MasteryStreak.mine(p.getUUID(), now, STREAK_TICKS);
                 if (lv >= 20 && isGathering(state)) {
                     spareWear(tool, p, 0.15f);
-                    if (srv && !state.is(Tags.Blocks.ORES) && !state.hasBlockEntity()
+                    if (srv && state.is(Tags.Blocks.ORES) && !state.hasBlockEntity() && tool.isCorrectToolForDrops(state)
                             && p.getRandom().nextFloat() < (lv >= 30 ? 0.15f : 0.10f))
-                        Block.dropResources(state, level, pos);
+                        Block.dropResources(state, level, pos, null, p, tool);
                 }
             }
             case "trailblazer" -> {
