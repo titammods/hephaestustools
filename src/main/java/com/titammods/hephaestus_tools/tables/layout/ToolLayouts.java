@@ -174,4 +174,8 @@ public final class ToolLayouts {
             KAMA, SCYTHE,
             DAGGER, SWORD, CLEAVER
     );
+
+    public static final List<ToolLayout> CRAFTABLE = ALL.stream()
+            .filter(layout -> layout != VEIN_HAMMER)
+            .toList();
 }

@@ -19,7 +19,7 @@ public record ToolAssembly(Item result, List<Item> parts) {
 
     public static void init() {
         if (!REGISTRY.isEmpty()) return;
-        for (var layout : ToolLayouts.ALL) {
+        for (var layout : ToolLayouts.CRAFTABLE) {
             List<Item> parts = ToolBuildHandler.getToolParts(layout.iconItem());
             if (!parts.isEmpty()) REGISTRY.add(new ToolAssembly(layout.iconItem(), parts));
         }

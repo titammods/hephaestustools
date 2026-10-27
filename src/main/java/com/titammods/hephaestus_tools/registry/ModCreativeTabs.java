@@ -26,7 +26,7 @@ public class ModCreativeTabs {
                     .icon(() -> new ItemStack(ModBlocks.ARSENAL_TABLE.get()))
                     .displayItems((params, output) -> {
                         List<Item> tools = List.of(
-                                ModItems.PICKAXE.get(), ModItems.SLEDGE_HAMMER.get(), ModItems.VEIN_HAMMER.get(),
+                                ModItems.PICKAXE.get(), ModItems.SLEDGE_HAMMER.get(),
                                 ModItems.MATTOCK.get(), ModItems.PAXEL.get(), ModItems.EXCAVATOR.get(), ModItems.HAND_AXE.get(),
                                 ModItems.BROAD_AXE.get(), ModItems.KAMA.get(), ModItems.SCYTHE.get(),
                                 ModItems.DAGGER.get(), ModItems.SWORD.get(), ModItems.CLEAVER.get()
