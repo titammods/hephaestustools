@@ -409,22 +409,78 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         return out;
     }
 
-    private static final int KEY_COLOR = 0xFFF0804F;
-    private Component hintLine(Component[] line) {
-        Component out = Component.literal("[" + line[0].getString() + "] ").withColor(KEY_COLOR & 0xFFFFFF)
-                .append(line[1].copy().withColor(0xFFFFFF));
-        if (line.length >= 4) out = out.copy().append(Component.literal("   [" + line[2].getString() + "] ").withColor(KEY_COLOR & 0xFFFFFF))
-                .append(line[3].copy().withColor(0xFFFFFF));
-        return out;
-    }
-    private int hintsH() { return hintLines().size() * 10; }
-    private int hintsY() { return height - 12 - hintsH(); }
+    private static final Identifier SPR_HINT_PANEL = spr("drawer_panel");
+    private static final int HINT_KEY = 11, HINT_ROW = 12, HINT_PAD = 5, HINT_GAP = 4;
+    private static final float HINT_SCALE = .7f;
+    private float hintsT = 0f;
 
-    private void drawCornerHints(GuiGraphicsExtractor g) {
-        int y = hintsY();
+    private List<Component[]> hintRows() {
+        List<Component[]> rows = new ArrayList<>();
         for (Component[] line : hintLines()) {
-            textRight(g, hintLine(line), width - 12, y, 200, .62f, WHITE);
-            y += 10;
+            rows.add(new Component[] {line[0], line[1]});
+            if (line.length >= 4) rows.add(new Component[] {line[2], line[3]});
+        }
+        return rows;
+    }
+
+    private int hintsH() { return HINT_KEY; }
+    private int hintsY() { return height - 12 - hintsH(); }
+    private int hintButtonX() { return width - 12 - HINT_KEY; }
+
+    private int hintKeyW(Component key) {
+        return Math.max(HINT_KEY, Math.round(font.width(key) * HINT_SCALE) + 6);
+    }
+
+    private int[] hintPanelRect() {
+        List<Component[]> rows = hintRows();
+        int keyW = 0, labelW = 0;
+        for (Component[] row : rows) {
+            keyW = Math.max(keyW, hintKeyW(row[0]));
+            labelW = Math.max(labelW, Math.round(font.width(row[1]) * HINT_SCALE));
+        }
+        int w = HINT_PAD * 2 + keyW + HINT_GAP + labelW, h = HINT_PAD * 2 + rows.size() * HINT_ROW - (HINT_ROW - HINT_KEY);
+        int x = width - 12 - w, y = hintsY() - 3 - h;
+        return new int[] {x, y, w, h, keyW};
+    }
+
+    private boolean overHints(double mx, double my) {
+        if (in(mx, my, hintButtonX() - 2, hintsY() - 2, HINT_KEY + 4, HINT_KEY + 4)) return true;
+        if (hintsT <= 0.05f) return false;
+        int[] r = hintPanelRect();
+        return in(mx, my, r[0], r[1], r[2], r[3] + 6);
+    }
+
+    private void hintKey(GuiGraphicsExtractor g, int x, int y, int w, Component key, float alpha) {
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_KEY, x, y, w, HINT_KEY, argb(alpha, 1f, 1f, 1f));
+        int tw = Math.round(font.width(key) * HINT_SCALE);
+        hintText(g, key, x + (w - tw) / 2 + 1, y + 2, BTN_TEXT, alpha);
+    }
+
+    private void hintText(GuiGraphicsExtractor g, Component text, int x, int y, int color, float alpha) {
+        int a = Math.round(Mth.clamp(alpha, 0f, 1f) * (color >>> 24));
+        if (a < 8) return;
+        g.pose().pushMatrix();
+        g.pose().translate(x, y);
+        g.pose().scale(HINT_SCALE, HINT_SCALE);
+        g.text(font, text, 0, 0, (a << 24) | (color & 0xFFFFFF), true);
+        g.pose().popMatrix();
+    }
+
+    private void drawCornerHints(GuiGraphicsExtractor g, int mx, int my) {
+        boolean open = overHints(mx, my);
+        hintsT = Mth.clamp(hintsT + (open ? 1f : -1f) * dt / 0.16f, 0f, 1f);
+        int bx = hintButtonX(), by = hintsY();
+        hintKey(g, bx, by, HINT_KEY, Component.literal("?"), open ? 1f : 0.75f);
+        if (hintsT <= 0.01f) return;
+        float t = outCubic(hintsT);
+        int[] r = hintPanelRect();
+        int slide = Math.round((1f - t) * 6f);
+        g.blitSprite(RenderPipelines.GUI_TEXTURED, SPR_HINT_PANEL, r[0], r[1] + slide, r[2], r[3], argb(t, 1f, 1f, 1f));
+        int y = r[1] + slide + HINT_PAD;
+        for (Component[] row : hintRows()) {
+            hintKey(g, r[0] + HINT_PAD, y, hintKeyW(row[0]), row[0], t);
+            hintText(g, row[1], r[0] + HINT_PAD + r[4] + HINT_GAP, y + 2, INK, t);
+            y += HINT_ROW;
         }
     }
 
@@ -478,7 +534,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             drawSparks(g);
             drawDock(g, mx, my);
         }
-        drawCornerHints(g);
+        drawCornerHints(g, mx, my);
         if (!hideUi) drawBag(g, mx, my);
         if (tab == 0 && !inspect) drawPartLabel(g);
         drawDrawer(g, mx, my);
@@ -1388,11 +1444,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             if (in(mx, my, lpX() - 6, lTop() - 22, pageW() + 12, leftPageH() + 26)) return false;
             if (showRight() && in(mx, my, rpX() - 6, rTop() - 6, pageW() + 12, rightPageH() + 10)) return false;
         }
-        if (!inspect) {
-            int hw = 0;
-            for (Component[] l : hintLines()) hw = Math.max(hw, Math.round(font.width(hintLine(l)) * .62f * TEXT_BOOST));
-            if (in(mx, my, width - 12 - hw, hintsY(), hw, hintsH())) return false;
-        }
+        if (!inspect && overHints(mx, my)) return false;
         if (drawerT > 0.05f && in(mx, my, drawerX() - 7, drawerY() - 7, DRAWER_W + 14, DRAWER_H + 14)) return false;
         return true;
     }
