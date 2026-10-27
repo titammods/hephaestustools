@@ -167,6 +167,15 @@ public final class WorkbenchAssembly {
         return required >= 2 && have == required && mergedCount() == have;
     }
 
+    public static boolean allPlaced() {
+        return required >= 2 && placedCount() == required;
+    }
+
+    public static void attachAll(List<ItemStack> parts) {
+        for (int i = 0; i < MAX && i < parts.size(); i++)
+            if (present[i] && !attached[i] && !parts.get(i).isEmpty()) attachNow(i, parts.get(i));
+    }
+
     public static float completeMix() { return (float) completeRaw; }
     public static boolean hasParts() { return placedCount() > 0; }
 

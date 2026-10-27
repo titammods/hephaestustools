@@ -570,7 +570,7 @@
   "gui.hephaestus_tools.build.slot_free_short": "Free slot",
   "gui.hephaestus_tools.build.status_title": "Status",
   "gui.hephaestus_tools.build.tool_done": "The tool is finished. Take it with the button on the right page.",
-  "gui.hephaestus_tools.build.ready_hint": "All parts attached! Press Forge (or Space).",
+  "gui.hephaestus_tools.build.ready_hint": "All parts ready! Press Forge (or Space).",
   "gui.hephaestus_tools.build.not_installed": "Not installed",
   "gui.hephaestus_tools.build.pick_left": "Pick a modifier in the list on the left",
   "gui.hephaestus_tools.build.no_free_slot": "No free slot: level up the tool",

@@ -804,7 +804,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
             tip(x - 3, ry - 2, w + 6, ROW - 2, icon.getHoverName(), tr(attached ? "part_attached" : placed ? "part_on_table" : "part_missing"));
         }
         int hintTop = canFill() ? fillY() + 20 : partRowY(partCount()) + 2;
-        boolean complete = WorkbenchAssembly.isComplete();
+        boolean complete = WorkbenchAssembly.allPlaced();
         String hint = complete ? "ready_hint" : !carried.isEmpty() ? "drop_hint2" : WorkbenchAssembly.placedCount() > 0 ? "attach_hint" : "drop_hint";
         wrapped(g, tr(hint), x, hintTop, w, .56f, complete ? INK_GREEN : INK_BLUE, 3);
         if (canFill()) {
@@ -1670,7 +1670,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
 
     private boolean readyToCraft() {
         return menu.getActiveTab() == 0 && !menu.isRepair() && menu.output().isEmpty() && !menu.preview().isEmpty()
-                && WorkbenchAssembly.isComplete();
+                && WorkbenchAssembly.allPlaced();
     }
 
     private void syncCinematicScene() {
@@ -2429,6 +2429,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     private void startCraft() {
         if (!readyToCraft() || !menu.getCarried().isEmpty() || WorkbenchCraft.isBusy()) return;
         inspect = false;
+        attachPlacedParts();
         if (skipCinematic()) { finishCraft(); quickDone(); return; }
         click();
         if (WorkbenchCraft.start(menu.preview(), this::finishCraft)) announce(false);
@@ -2444,6 +2445,12 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
 
     private void announce(boolean tinker) {
         ClientPacketDistributor.sendToServer(new CraftAnimPayload(menu.getBlockEntity().getBlockPos(), tinker));
+    }
+
+    private void attachPlacedParts() {
+        List<ItemStack> parts = new ArrayList<>(4);
+        for (int i = 0; i < 4; i++) parts.add(menu.input(i));
+        WorkbenchAssembly.attachAll(parts);
     }
 
     private void finishCraft() {

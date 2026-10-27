@@ -566,7 +566,7 @@
   "gui.hephaestus_tools.build.slot_free_short": "Espaço livre",
   "gui.hephaestus_tools.build.status_title": "Estado",
   "gui.hephaestus_tools.build.tool_done": "A ferramenta está pronta. Pegue-a com o botão na página direita.",
-  "gui.hephaestus_tools.build.ready_hint": "Todas as peças encaixadas! Pressione Forjar (ou Espaço).",
+  "gui.hephaestus_tools.build.ready_hint": "Todas as peças prontas! Pressione Forjar (ou Espaço).",
   "gui.hephaestus_tools.build.not_installed": "Não instalado",
   "gui.hephaestus_tools.build.pick_left": "Escolha um modificador na lista à esquerda",
   "gui.hephaestus_tools.build.no_free_slot": "Nenhum espaço livre: aumente o nível da ferramenta",
