@@ -25,6 +25,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,9 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
                 @Override public boolean mayPlace(ItemStack s) { return isActive() && inputAccepts(part, s); }
                 @Override public int getMaxStackSize() { return inputLimit(part); }
                 @Override public int getMaxStackSize(ItemStack s) { return inputLimit(part); }
+                @Override public Optional<ItemStack> tryRemove(int amount, int maxAmount, Player player) {
+                    return super.tryRemove(Math.min(amount, Math.max(1, getItem().getMaxStackSize())), maxAmount, player);
+                }
             });
         }
         addSlot(new SlotItemHandler(be.getOutputSlot(), 0,
@@ -384,6 +388,14 @@ public class ArsenalTableMenu extends AbstractContainerMenu {
         Slot slot = slots.get(index);
         if (!slot.isActive() || !slot.hasItem() || !slot.mayPickup(player)) return ItemStack.EMPTY;
         ItemStack stack = slot.getItem(), original = stack.copy();
+        if (index < MACHINE_SLOTS && stack.getCount() > stack.getMaxStackSize()) {
+            ItemStack portion = stack.copyWithCount(stack.getMaxStackSize());
+            if (!moveItemStackTo(portion, MACHINE_SLOTS, slots.size(), true)) return ItemStack.EMPTY;
+            int moved = stack.getMaxStackSize() - portion.getCount();
+            if (moved > 0) slot.remove(moved);
+            slot.setChanged();
+            return ItemStack.EMPTY;
+        }
         if (index < MACHINE_SLOTS) {
             if (!moveItemStackTo(stack, MACHINE_SLOTS, slots.size(), true)) return ItemStack.EMPTY;
         } else if (!(activeTab == 0 ? moveItemStackTo(stack, 1, 6, false)

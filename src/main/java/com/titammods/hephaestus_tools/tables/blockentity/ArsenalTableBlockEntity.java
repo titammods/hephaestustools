@@ -46,6 +46,8 @@ import java.util.List;
 public class ArsenalTableBlockEntity extends BlockEntity implements MenuProvider {
 
     private static final Codec<List<ItemStack>> STACKS_CODEC = ItemStack.OPTIONAL_CODEC.listOf();
+    private static final Codec<List<Integer>> COUNTS_CODEC = Codec.INT.listOf();
+    public static final int BULK_LIMIT = 4000;
 
     private final ItemStackHandler upgradeSlot = new ItemStackHandler(1) {
         @Override protected void onContentsChanged(int slot) { setChanged(); syncToClient(); }
@@ -57,7 +59,7 @@ public class ArsenalTableBlockEntity extends BlockEntity implements MenuProvider
     };
     private final ItemStackHandler inputSlots = new ItemStackHandler(4) {
         @Override protected void onContentsChanged(int slot) { setChanged(); syncToClient(); }
-        @Override public int getSlotLimit(int slot) { return slot < 3 ? 99 : 1; }
+        @Override public int getSlotLimit(int slot) { return slot == 0 ? BULK_LIMIT : slot < 3 ? 99 : 1; }
     };
     private final ItemStackHandler outputSlot = new ItemStackHandler(1) {
         @Override protected void onContentsChanged(int slot) { setChanged(); syncToClient(); }
@@ -199,7 +201,19 @@ public class ArsenalTableBlockEntity extends BlockEntity implements MenuProvider
         super.saveAdditional(output);
         output.store("Upgrade", STACKS_CODEC, snapshot(upgradeSlot));
         output.store("Blueprint", STACKS_CODEC, snapshot(blueprintSlot));
-        output.store("Inputs", STACKS_CODEC, snapshot(inputSlots));
+        List<ItemStack> inputs = snapshot(inputSlots);
+        List<Integer> counts = new ArrayList<>(inputs.size());
+        boolean bulk = false;
+        for (int i = 0; i < inputs.size(); i++) {
+            ItemStack stack = inputs.get(i);
+            counts.add(stack.getCount());
+            if (stack.getCount() > 99) {
+                inputs.set(i, stack.copyWithCount(99));
+                bulk = true;
+            }
+        }
+        output.store("Inputs", STACKS_CODEC, inputs);
+        if (bulk) output.store("InputCounts", COUNTS_CODEC, counts);
         output.store("Output", STACKS_CODEC, snapshot(outputSlot));
         if (hasStoredItems()) output.store("Storage", STACKS_CODEC, new ArrayList<>(storageItems));
     }
@@ -210,6 +224,13 @@ public class ArsenalTableBlockEntity extends BlockEntity implements MenuProvider
         input.read("Upgrade", STACKS_CODEC).ifPresent(list -> restore(upgradeSlot, list));
         input.read("Blueprint", STACKS_CODEC).ifPresent(list -> restore(blueprintSlot, list));
         input.read("Inputs", STACKS_CODEC).ifPresent(list -> restore(inputSlots, list));
+        input.read("InputCounts", COUNTS_CODEC).ifPresent(counts -> {
+            for (int i = 0; i < Math.min(counts.size(), inputSlots.getSlots()); i++) {
+                ItemStack stack = inputSlots.getStackInSlot(i);
+                if (!stack.isEmpty() && counts.get(i) > stack.getCount())
+                    inputSlots.setStackInSlot(i, stack.copyWithCount(Math.min(counts.get(i), inputSlots.getSlotLimit(i))));
+            }
+        });
         input.read("Output", STACKS_CODEC).ifPresent(list -> restore(outputSlot, list));
         for (int i = 0; i < STORAGE_SIZE; i++) storageItems.set(i, ItemStack.EMPTY);
         input.read("Storage", STACKS_CODEC).ifPresent(list -> {

@@ -1663,7 +1663,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     }
 
     private boolean stagedAttached() {
-        return menu.getActiveTab() == 1 && !menu.input(0).isEmpty() && WorkbenchAssembly.isMerged(0);
+        return menu.getActiveTab() == 1 && !menu.input(0).isEmpty() && !(menu.input(0).getItem() instanceof ToolPartItem);
     }
 
     private boolean morphReady() { return morphWas && morphAge >= 0.3f; }
@@ -1686,6 +1686,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         WorkbenchAssembly.sync(inputs, menu.getActiveTab() == 0 && !menu.isRepair() ? menu.parts().size() : 0);
 
         if (menu.getActiveTab() == 0 && menu.isRepair() && menu.isRepairMaterial(menu.input(0))) WorkbenchAssembly.attachNow(0, menu.input(0));
+        if (stagedAttached() && toolReady() && stagedUpgrade() != null) WorkbenchAssembly.attachNow(0, menu.input(0));
         boolean showGhost = menu.getActiveTab() == 0 && !menu.isRepair() && menu.output().isEmpty()
                 && menu.getSelectedTool() >= 0 && menu.getSelectedTool() < ToolAssembly.REGISTRY.size();
         WorkbenchAssembly.setGhost(showGhost

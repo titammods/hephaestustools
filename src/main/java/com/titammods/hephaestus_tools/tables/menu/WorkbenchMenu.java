@@ -107,7 +107,7 @@ public class WorkbenchMenu extends ArsenalTableMenu {
     @Override
     protected int inputLimit(int part) {
         if (activeTab == 0 && part == 0 && isRepair()) return 64;
-        if (activeTab == 1) return part == 0 ? 99 : 64;
+        if (activeTab == 1) return part == 0 ? ArsenalTableBlockEntity.BULK_LIMIT : 64;
         return 1;
     }
 
@@ -340,7 +340,7 @@ public class WorkbenchMenu extends ArsenalTableMenu {
         if (lvl >= up.maxLevel()) return false;
         ItemStack bench = input(0);
         if (!bench.isEmpty() && bench.getItem() != up.costItem()) { returnSlot(player, 1); bench = input(0); }
-        int need = Math.min(99, up.costFor(lvl + 1)) - (bench.isEmpty() ? 0 : bench.getCount());
+        int need = Math.min(ArsenalTableBlockEntity.BULK_LIMIT, up.costFor(lvl + 1)) - (bench.isEmpty() ? 0 : bench.getCount());
         var inv = player.getInventory();
         int taken = 0;
         for (int s = 0; s < inv.getContainerSize() && taken < need; s++) {
