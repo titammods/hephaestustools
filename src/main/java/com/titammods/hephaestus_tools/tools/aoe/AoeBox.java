@@ -75,14 +75,15 @@ public final class AoeBox {
             heightDir = Direction.UP;
         }
 
+        int verticalShift = side.getAxis() == Direction.Axis.Y ? 0 : Math.max(0, h - 1);
         List<BlockPos> out = new ArrayList<>();
         BlockPos.MutableBlockPos m = new BlockPos.MutableBlockPos();
         for (int dd = 0; dd <= d; dd++) {
             for (int dh = -h; dh <= h; dh++) {
                 for (int dw = -w; dw <= w; dw++) {
-                    if (dw == 0 && dh == 0 && dd == 0) continue;
+                    if (dw == 0 && dh + verticalShift == 0 && dd == 0) continue;
                     m.set(center);
-                    m.move(widthDir, dw).move(heightDir, dh).move(depthDir, dd);
+                    m.move(widthDir, dw).move(heightDir, dh + verticalShift).move(depthDir, dd);
                     if (isEffective(world, m, refHardness, hardnessLimit, cleanRef, stack, tool)) out.add(m.immutable());
                 }
             }
