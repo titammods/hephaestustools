@@ -1,9 +1,7 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "hephaestus_tools:item/tool/pickaxe/handle",
-    "layer1": "hephaestus_tools:item/tool/paxel/axe",
-    "layer2": "hephaestus_tools:item/tool/paxel/pick",
-    "layer3": "hephaestus_tools:item/tool/paxel/shovel_part"
+    "layer0": "hephaestus_tools:item/tool/paxel/handle",
+    "layer1": "hephaestus_tools:item/tool/paxel/head"
   }
 }

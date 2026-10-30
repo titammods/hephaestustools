@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "particle": "hephaestus_tools:item/tool/vein_hammer/handle"
+    "particle": "hephaestus_tools:item/tool/vein_hammer/head"
   }
 }

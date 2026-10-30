@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/handheld",
   "textures": {
-    "particle": "hephaestus_tools:item/tool/dagger/blade"
+    "particle": "hephaestus_tools:item/tool/dagger/guard"
   }
 }
