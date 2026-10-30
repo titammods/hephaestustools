@@ -2,7 +2,7 @@
   "parent": "builtin/entity",
   "gui_light": "front",
   "textures": {
-    "particle": "hephaestus_tools:item/tool/paxel/pick"
+    "particle": "hephaestus_tools:item/tool/paxel/head"
   },
   "display": {
     "ground": {
@@ -125,4 +125,4 @@
       ]
     }
   }
-}
+}

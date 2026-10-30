@@ -1,1 +1,1 @@
-{ "parent": "minecraft:item/generated", "textures": { "layer0": "hephaestus_tools:item/tool/broad_axe/blade" } }
+{ "parent": "minecraft:item/generated", "textures": { "layer0": "hephaestus_tools:item/tool/parts/great_axe_bit" } }

@@ -20,19 +20,19 @@ public final class ToolLayerMap {
         if (initialized) return;
         synchronized (ToolLayerMap.class) {
             if (initialized) return;
-            put(ModItems.PICKAXE.get(),       0, 1, 2);
-            put(ModItems.SLEDGE_HAMMER.get(), 1, 0, 3, 2);
-            put(ModItems.VEIN_HAMMER.get(),   1, 0, 3, 2);
-            put(ModItems.MATTOCK.get(),       0, 1, 2);
-            put(ModItems.PAXEL.get(),         1, 3, 0, 2);
-            put(ModItems.EXCAVATOR.get(),     0, 3, 1, 2);
-            put(ModItems.HAND_AXE.get(),      0, 1, 2);
-            put(ModItems.BROAD_AXE.get(),     1, 0, 2, 3);
-            put(ModItems.KAMA.get(),          0, 1, 2);
-            put(ModItems.SCYTHE.get(),        0, 3, 1, 2);
-            put(ModItems.DAGGER.get(),        0, 1, 1, 1);
-            put(ModItems.SWORD.get(),         0, 2, 1);
-            put(ModItems.CLEAVER.get(),       0, 3, 2, 1);
+            put(ModItems.PICKAXE.get(),       1, 0, 2);
+            put(ModItems.SLEDGE_HAMMER.get(), 1, 0, 2, 3);
+            put(ModItems.VEIN_HAMMER.get(),  1, 0, 3, 2);
+            put(ModItems.MATTOCK.get(),      1, 0, 2);
+            put(ModItems.PAXEL.get(),        1, 0);
+            put(ModItems.EXCAVATOR.get(),    1, 3, 2, 0);
+            put(ModItems.HAND_AXE.get(),      1, 0, 2);
+            put(ModItems.BROAD_AXE.get(),    1, 0, 3, 2);
+            put(ModItems.KAMA.get(),          1, 0, 2);
+            put(ModItems.SCYTHE.get(),       1, 3, 2, 0);
+            put(ModItems.DAGGER.get(),       1, 1, 1, 0);
+            put(ModItems.SWORD.get(),        1, 0, 2);
+            put(ModItems.CLEAVER.get(),      1, 0, 3, 3);
             initialized = true;
         }
     }

@@ -1,1 +1,6 @@
-{ "parent": "minecraft:item/generated", "textures": { "layer0": "hephaestus_tools:item/cast/broad_blade" } }
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "hephaestus_tools:item/cast/great_edge"
+  }
+}

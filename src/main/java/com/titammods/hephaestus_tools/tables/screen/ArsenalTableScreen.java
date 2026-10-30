@@ -130,18 +130,18 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
 
     private static Map<Item, Identifier> partGhostTextures() {
         if (PART_GHOST_TEXTURES.isEmpty()) {
-            PART_GHOST_TEXTURES.put(ModItems.PICK_HEAD.get(), tex("item/tool/pickaxe/head"));
-            PART_GHOST_TEXTURES.put(ModItems.HAMMER_HEAD.get(), tex("item/tool/sledge_hammer/head"));
-            PART_GHOST_TEXTURES.put(ModItems.SMALL_AXE_HEAD.get(), tex("item/tool/hand_axe/head"));
-            PART_GHOST_TEXTURES.put(ModItems.BROAD_AXE_HEAD.get(), tex("item/tool/broad_axe/blade"));
-            PART_GHOST_TEXTURES.put(ModItems.ADZE_HEAD.get(), tex("item/tool/parts/adze_head"));
-            PART_GHOST_TEXTURES.put(ModItems.LARGE_PLATE.get(), tex("item/tool/parts/large_plate"));
-            PART_GHOST_TEXTURES.put(ModItems.SMALL_BLADE.get(), tex("item/tool/parts/small_blade"));
-            PART_GHOST_TEXTURES.put(ModItems.LARGE_BLADE.get(), tex("item/tool/cleaver/head"));
-            PART_GHOST_TEXTURES.put(ModItems.TOOL_HANDLE.get(), tex("item/tool/parts/tool_handle"));
-            PART_GHOST_TEXTURES.put(ModItems.TOUGH_HANDLE.get(), tex("item/tool/parts/tough_handle"));
-            PART_GHOST_TEXTURES.put(ModItems.TOOL_BINDING.get(), tex("item/tool/parts/tool_binding"));
-            PART_GHOST_TEXTURES.put(ModItems.TOUGH_BINDING.get(), tex("item/tool/parts/tough_binding"));
+            PART_GHOST_TEXTURES.put(ModItems.PICK_HEAD.get(), tex("item/tool/parts/pick_spike"));
+            PART_GHOST_TEXTURES.put(ModItems.HAMMER_HEAD.get(), tex("item/tool/parts/maul"));
+            PART_GHOST_TEXTURES.put(ModItems.SMALL_AXE_HEAD.get(), tex("item/tool/parts/axe_bit"));
+            PART_GHOST_TEXTURES.put(ModItems.BROAD_AXE_HEAD.get(), tex("item/tool/parts/great_axe_bit"));
+            PART_GHOST_TEXTURES.put(ModItems.ADZE_HEAD.get(), tex("item/tool/parts/shovel_head"));
+            PART_GHOST_TEXTURES.put(ModItems.LARGE_PLATE.get(), tex("item/tool/parts/forged_slab"));
+            PART_GHOST_TEXTURES.put(ModItems.SMALL_BLADE.get(), tex("item/tool/parts/short_edge"));
+            PART_GHOST_TEXTURES.put(ModItems.LARGE_BLADE.get(), tex("item/tool/parts/great_edge"));
+            PART_GHOST_TEXTURES.put(ModItems.TOOL_HANDLE.get(), tex("item/tool/parts/haft"));
+            PART_GHOST_TEXTURES.put(ModItems.TOUGH_HANDLE.get(), tex("item/tool/parts/great_haft"));
+            PART_GHOST_TEXTURES.put(ModItems.TOOL_BINDING.get(), tex("item/tool/parts/clamp_band"));
+            PART_GHOST_TEXTURES.put(ModItems.TOUGH_BINDING.get(), tex("item/tool/parts/forge_patch"));
         }
         return PART_GHOST_TEXTURES;
     }
@@ -811,4 +811,4 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
         }
         return super.mouseScrolled(mx, my, horizontal, vertical);
     }
-}
+}

@@ -1,1 +1,6 @@
-{ "parent": "minecraft:item/generated", "textures": { "layer0": "hephaestus_tools:item/cast/small_axe_head" } }
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "hephaestus_tools:item/cast/axe_bit"
+  }
+}

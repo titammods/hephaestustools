@@ -37,7 +37,7 @@ import java.util.function.Consumer;
 
 public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.RenderData> {
 
-    public record Layer(Identifier texture, int color, @Nullable MaterialAnimation animation) {}
+    public record Layer(Identifier texture, int color, @Nullable MaterialAnimation animation, boolean handle) {}
 
     public record RenderData(List<Layer> layers, List<Identifier> overlays, long phase) {}
 
@@ -49,47 +49,70 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
 
     private static final Map<String, List<String>> TOOL_LAYERS = Map.ofEntries(
             Map.entry("pickaxe", List.of(
-                    "item/tool/pickaxe/head", "item/tool/pickaxe/handle", "item/tool/pickaxe/binding")),
+                    "item/tool/pickaxe/handle",
+                    "item/tool/pickaxe/head",
+                    "item/tool/pickaxe/binding")),
             Map.entry("sledge_hammer", List.of(
-                    "item/tool/sledge_hammer/handle", "item/tool/sledge_hammer/head",
-                    "item/tool/sledge_hammer/front", "item/tool/sledge_hammer/back")),
+                    "item/tool/sledge_hammer/handle",
+                    "item/tool/sledge_hammer/head",
+                    "item/tool/sledge_hammer/front",
+                    "item/tool/sledge_hammer/back")),
             Map.entry("vein_hammer", List.of(
-                    "item/tool/vein_hammer/handle", "item/tool/vein_hammer/head",
-                    "item/tool/vein_hammer/front", "item/tool/vein_hammer/grip")),
+                    "item/tool/vein_hammer/handle",
+                    "item/tool/vein_hammer/head",
+                    "item/tool/vein_hammer/front",
+                    "item/tool/vein_hammer/grip")),
             Map.entry("mattock", List.of(
-                    "item/tool/mattock/axe", "item/tool/pickaxe/handle", "item/tool/mattock/pick")),
+                    "item/tool/mattock/handle",
+                    "item/tool/mattock/axe",
+                    "item/tool/mattock/pick")),
             Map.entry("paxel", List.of(
-                    "item/tool/pickaxe/handle", "item/tool/paxel/axe",
-                    "item/tool/paxel/pick", "item/tool/paxel/shovel_part")),
+                    "item/tool/paxel/handle",
+                    "item/tool/paxel/head")),
             Map.entry("excavator", List.of(
-                    "item/tool/excavator/head", "item/tool/excavator/grip",
-                    "item/tool/excavator/handle", "item/tool/excavator/binding")),
+                    "item/tool/excavator/handle",
+                    "item/tool/excavator/grip",
+                    "item/tool/excavator/binding",
+                    "item/tool/excavator/head")),
             Map.entry("hand_axe", List.of(
-                    "item/tool/hand_axe/head", "item/tool/pickaxe/handle", "item/tool/hand_axe/binding")),
+                    "item/tool/hand_axe/handle",
+                    "item/tool/hand_axe/head",
+                    "item/tool/hand_axe/binding")),
             Map.entry("broad_axe", List.of(
-                    "item/tool/broad_axe/handle", "item/tool/broad_axe/blade",
-                    "item/tool/broad_axe/back", "item/tool/broad_axe/binding")),
+                    "item/tool/broad_axe/handle",
+                    "item/tool/broad_axe/blade",
+                    "item/tool/broad_axe/back",
+                    "item/tool/broad_axe/binding")),
             Map.entry("kama", List.of(
-                    "item/tool/kama/head", "item/tool/pickaxe/handle", "item/tool/kama/binding")),
+                    "item/tool/kama/handle",
+                    "item/tool/kama/head",
+                    "item/tool/kama/binding")),
             Map.entry("scythe", List.of(
-                    "item/tool/scythe/head", "item/tool/scythe/accessory",
-                    "item/tool/scythe/handle", "item/tool/scythe/binding")),
+                    "item/tool/scythe/handle",
+                    "item/tool/scythe/accessory",
+                    "item/tool/scythe/binding",
+                    "item/tool/scythe/head")),
             Map.entry("dagger", List.of(
-                    "item/tool/dagger/blade", "item/tool/dagger/guard",
-                    "item/tool/dagger/crossguard", "item/tool/dagger/handle")),
+                    "item/tool/dagger/handle",
+                    "item/tool/dagger/guard",
+                    "item/tool/dagger/crossguard",
+                    "item/tool/dagger/blade")),
             Map.entry("sword", List.of(
-                    "item/tool/sword/blade", "item/tool/sword/guard", "item/tool/sword/handle")),
+                    "item/tool/sword/handle",
+                    "item/tool/sword/blade",
+                    "item/tool/sword/guard")),
             Map.entry("cleaver", List.of(
-                    "item/tool/cleaver/head", "item/tool/cleaver/shield",
-                    "item/tool/cleaver/guard", "item/tool/cleaver/handle"))
+                    "item/tool/cleaver/handle",
+                    "item/tool/cleaver/head",
+                    "item/tool/cleaver/shield",
+                    "item/tool/cleaver/guard"))
     );
 
     private static final Map<String, List<String>> WORKBENCH_LAYERS = Map.ofEntries(
             Map.entry("hand_axe", List.of(
-                    "item/tool/workbench/hand_axe/head", "item/tool/pickaxe/handle", "item/tool/workbench/hand_axe/binding")),
-            Map.entry("cleaver", List.of(
-                    "item/tool/workbench/cleaver/head", "item/tool/cleaver/shield",
-                    "item/tool/cleaver/guard", "item/tool/cleaver/handle"))
+                    "item/tool/hand_axe/handle",
+                    "item/tool/hand_axe/head",
+                    "item/tool/hand_axe/binding"))
     );
 
     public static List<String> workbenchLayersFor(Item item) {
@@ -159,6 +182,21 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
     private static final Map<Identifier, Boolean> TEXTURE_EXISTS = new ConcurrentHashMap<>();
     private static final Map<Identifier, boolean[][]> PIXEL_MASKS = new ConcurrentHashMap<>();
 
+    private static final float DESATURATE = 0.35f;
+    private static final float HANDLE_DARKEN = 0.85f;
+
+    public static int adjustColor(int argb, boolean handle) {
+        int a = argb >>> 24 & 255;
+        int[] c = {argb >> 16 & 255, argb >> 8 & 255, argb & 255};
+        float lum = 0.299f * c[0] + 0.587f * c[1] + 0.114f * c[2];
+        for (int i = 0; i < 3; i++) {
+            float v = c[i] + (lum - c[i]) * DESATURATE;
+            if (handle) v *= HANDLE_DARKEN;
+            c[i] = Math.max(0, Math.min(255, Math.round(v)));
+        }
+        return a << 24 | c[0] << 16 | c[1] << 8 | c[2];
+    }
+
     private static boolean[][] mask(Identifier png) {
         return PIXEL_MASKS.computeIfAbsent(png, path -> {
             var resource = Minecraft.getInstance().getResourceManager().getResource(path);
@@ -203,7 +241,7 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         public static final MapCodec<Unbaked> CODEC = MapCodec.unit(Unbaked::new);
 
         @Override
-        public SpecialModelRenderer<RenderData> bake(SpecialModelRenderer.BakingContext ctx) {
+        public SpecialModelRenderer<RenderData> bake(BakingContext ctx) {
             return new ToolItemRenderer();
         }
 
@@ -237,7 +275,8 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
             for (int i = 0; i < paths.size(); i++) {
                 MaterialAnimation animation = ToolColorHandler.INSTANCE.getAnimation(stack, i);
                 animated |= animation != null;
-                layers.add(new Layer(png(paths.get(i)), ToolColorHandler.INSTANCE.getColor(stack, i), animation));
+                layers.add(new Layer(png(paths.get(i)), ToolColorHandler.INSTANCE.getColor(stack, i), animation,
+                        paths.get(i).endsWith("/handle")));
             }
         }
         List<Identifier> overlays = modifierTextures(stack);
@@ -266,7 +305,7 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
             float lift = depth++ * LAYER_STEP;
             if (style != null && !style.showLayer(i)) continue;
             boolean[][] pixels = mask(layer.texture());
-            int color = layer.color();
+            int color = adjustColor(layer.color(), layer.handle());
             MaterialAnimation animation = layer.animation();
             collector.submitCustomGeometry(poseStack, renderType(layer.texture(), translucent),
                     (pose, buf) -> pixelGeometry(buf, pose.pose(), pixels, color, animation, ticks, style, lift, 0f, packedOverlay, sky, block));
