@@ -37,6 +37,10 @@ public final class ToolDurability {
         tool.setDamageValue(next);
     }
 
+    public static boolean pending() {
+        return CAUSE.get() != null;
+    }
+
     public static WearCause takeCause() {
         WearCause cause = CAUSE.get();
         CAUSE.remove();

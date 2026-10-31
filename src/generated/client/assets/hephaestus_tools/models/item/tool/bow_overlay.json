@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "particle": "hephaestus_tools:item/tool/bow/grip"
+  }
+}

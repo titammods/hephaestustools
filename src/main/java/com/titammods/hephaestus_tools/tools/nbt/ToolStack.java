@@ -135,6 +135,7 @@ public final class ToolStack {
             ToolPropertiesData properties = getProperties(stack);
             updateAttributeModifiers(stack, properties);
             updateToolComponent(stack, properties);
+            if (stack.getItem() instanceof ModifiableItem modItem) modItem.applyToolComponents(stack, properties);
         }
     }
 

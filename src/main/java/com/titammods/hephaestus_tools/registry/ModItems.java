@@ -91,6 +91,9 @@ public class ModItems {
     public static final DeferredItem<ToolItems.SpearItem> SPEAR =
             tool("spear", ToolItems.SpearItem::new);
 
+    public static final DeferredItem<ToolItems.BowItem> BOW =
+            tool("bow", ToolItems.BowItem::new);
+
     public static final DeferredItem<ToolPartItem> PICK_HEAD       = part("pick_head", 0);
     public static final DeferredItem<ToolPartItem> HAMMER_HEAD     = part("hammer_head", 0);
     public static final DeferredItem<ToolPartItem> SMALL_AXE_HEAD  = part("small_axe_head", 0);
@@ -105,6 +108,8 @@ public class ModItems {
     public static final DeferredItem<ToolPartItem> TOUGH_BINDING   = part("tough_binding", 2);
     public static final DeferredItem<ToolPartItem> MACE_HEAD       = part("mace_head", 0);
     public static final DeferredItem<ToolPartItem> SPEAR_HEAD      = part("spear_head", 0);
+    public static final DeferredItem<ToolPartItem> BOW_LIMB        = part("bow_limb", 0);
+    public static final DeferredItem<ToolPartItem> BOWSTRING       = part("bowstring", 2);
 
     public static final DeferredItem<Item> PATTERN = stackable("pattern", 64);
     public static final DeferredItem<Item> FORGE_KEY = ITEMS.register("forge_key", k -> new Item(plainProps(k).stacksTo(1).rarity(Rarity.UNCOMMON)));
@@ -123,17 +128,19 @@ public class ModItems {
     public static final DeferredItem<Item> TOUGH_BINDING_CAST  = simple("tough_binding_cast");
     public static final DeferredItem<Item> MACE_HEAD_CAST      = simple("mace_head_cast");
     public static final DeferredItem<Item> SPEAR_HEAD_CAST     = simple("spear_head_cast");
+    public static final DeferredItem<Item> BOW_LIMB_CAST       = simple("bow_limb_cast");
+    public static final DeferredItem<Item> BOWSTRING_CAST      = simple("bowstring_cast");
 
     public static final List<DeferredItem<Item>> CASTS = List.of(
             PICK_HEAD_CAST, HAMMER_HEAD_CAST, SMALL_AXE_HEAD_CAST, BROAD_AXE_HEAD_CAST,
             ADZE_HEAD_CAST, LARGE_PLATE_CAST, SMALL_BLADE_CAST, LARGE_BLADE_CAST,
-            TOOL_HANDLE_CAST, TOUGH_HANDLE_CAST, TOOL_BINDING_CAST, TOUGH_BINDING_CAST, MACE_HEAD_CAST, SPEAR_HEAD_CAST);
+            TOOL_HANDLE_CAST, TOUGH_HANDLE_CAST, TOOL_BINDING_CAST, TOUGH_BINDING_CAST, MACE_HEAD_CAST, SPEAR_HEAD_CAST, BOW_LIMB_CAST, BOWSTRING_CAST);
 
     public static final List<DeferredItem<? extends Item>> TOOLS = List.of(
             PICKAXE, SLEDGE_HAMMER, VEIN_HAMMER, MATTOCK, PAXEL, EXCAVATOR, HAND_AXE,
-            BROAD_AXE, KAMA, SCYTHE, DAGGER, SWORD, CLEAVER, MACE, SPEAR);
+            BROAD_AXE, KAMA, SCYTHE, DAGGER, SWORD, CLEAVER, MACE, SPEAR, BOW);
 
     public static final List<DeferredItem<ToolPartItem>> PARTS = List.of(
             PICK_HEAD, HAMMER_HEAD, SMALL_AXE_HEAD, BROAD_AXE_HEAD, ADZE_HEAD, LARGE_PLATE,
-            SMALL_BLADE, LARGE_BLADE, TOOL_HANDLE, TOUGH_HANDLE, TOOL_BINDING, TOUGH_BINDING, MACE_HEAD, SPEAR_HEAD);
+            SMALL_BLADE, LARGE_BLADE, TOOL_HANDLE, TOUGH_HANDLE, TOOL_BINDING, TOUGH_BINDING, MACE_HEAD, SPEAR_HEAD, BOW_LIMB, BOWSTRING);
 }

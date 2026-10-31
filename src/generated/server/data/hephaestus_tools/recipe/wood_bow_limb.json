@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "hephaestus_tools:pattern",
+  "result": {
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:wood"
+    },
+    "count": 1,
+    "id": "hephaestus_tools:bow_limb"
+  }
+}

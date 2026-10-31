@@ -40,7 +40,9 @@ public class ModRecipeProvider implements DataProvider {
             new Part("tool_binding", 1),
             new Part("tough_binding", 3),
             new Part("mace_head", 8),
-            new Part("spear_head", 2)
+            new Part("spear_head", 2),
+            new Part("bow_limb", 3),
+            new Part("bowstring", 1)
     );
 
     @Override

@@ -112,7 +112,11 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
             Map.entry("spear", List.of(
                     "item/tool/spear/handle",
                     "item/tool/spear/head",
-                    "item/tool/spear/binding"))
+                    "item/tool/spear/binding")),
+            Map.entry("bow", List.of(
+                    "item/tool/bow/grip",
+                    "item/tool/bow/limb",
+                    "item/tool/bow/string"))
     );
 
     private static final Map<String, List<String>> WORKBENCH_LAYERS = Map.ofEntries(

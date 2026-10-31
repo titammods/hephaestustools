@@ -53,7 +53,8 @@ public class HephaestusToolsJeiPlugin implements IModPlugin {
                 ModItems.BROAD_AXE_HEAD.get(), ModItems.ADZE_HEAD.get(), ModItems.LARGE_PLATE.get(),
                 ModItems.SMALL_BLADE.get(), ModItems.LARGE_BLADE.get(), ModItems.TOOL_HANDLE.get(),
                 ModItems.TOUGH_HANDLE.get(), ModItems.TOOL_BINDING.get(), ModItems.TOUGH_BINDING.get(),
-                ModItems.MACE_HEAD.get(), ModItems.SPEAR_HEAD.get());
+                ModItems.MACE_HEAD.get(), ModItems.SPEAR_HEAD.get(),
+                ModItems.BOW_LIMB.get(), ModItems.BOWSTRING.get());
     }
 
     @Override

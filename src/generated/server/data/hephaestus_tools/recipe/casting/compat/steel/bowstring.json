@@ -1,0 +1,45 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbic"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "energizedpower"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "oritech"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "mffs"
+        }
+      ]
+    }
+  ],
+  "type": "hephaestus:casting_table",
+  "cast": "hephaestus_tools:bowstring_cast",
+  "cast_consumed": false,
+  "cooling_time": 100,
+  "fluid": {
+    "amount": 90,
+    "id": "hephaestus:molten_steel"
+  },
+  "result": {
+    "count": 1,
+    "id": "hephaestus_tools:bowstring"
+  }
+}

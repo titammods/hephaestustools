@@ -1,0 +1,40 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "irons_jewelry"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "arsmagicalegacy"
+        }
+      ]
+    }
+  ],
+  "type": "hephaestus:melting",
+  "fuel": {
+    "amount": 50,
+    "id": "minecraft:lava"
+  },
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:topaz"
+    },
+    "items": "hephaestus_tools:bowstring",
+    "strict": false
+  },
+  "result": {
+    "amount": 90,
+    "id": "hephaestus:molten_topaz"
+  },
+  "temperature": 1000,
+  "time": 100
+}

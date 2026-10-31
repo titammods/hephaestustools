@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "irons_jewelry"
+    }
+  ],
+  "type": "hephaestus:melting",
+  "fuel": {
+    "amount": 50,
+    "id": "minecraft:lava"
+  },
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:onyx"
+    },
+    "items": "hephaestus_tools:bow_limb",
+    "strict": false
+  },
+  "result": {
+    "amount": 270,
+    "id": "hephaestus:molten_onyx"
+  },
+  "temperature": 1000,
+  "time": 140
+}

@@ -179,13 +179,20 @@ public final class ToolLayouts {
                     in(33, 42, ModItems.TOOL_BINDING.get(), TOOL_BINDING)
             ));
 
+    public static final ToolLayout BOW = make("bow", ModItems.BOW.get(), HIDDEN,
+            List.of(
+                    in(53, 22, ModItems.BOW_LIMB.get(),    LARGE_BLADE),
+                    in(15, 60, ModItems.TOOL_HANDLE.get(), TOOL_HANDLE),
+                    in(33, 42, ModItems.BOWSTRING.get(),   TOOL_BINDING)
+            ));
+
     public static final List<ToolLayout> ALL = List.of(
             REPAIR,
             PICKAXE, SLEDGE_HAMMER, VEIN_HAMMER,
             MATTOCK, PAXEL, EXCAVATOR,
             HAND_AXE, BROAD_AXE,
             KAMA, SCYTHE,
-            DAGGER, SWORD, CLEAVER, MACE, SPEAR
+            DAGGER, SWORD, CLEAVER, MACE, SPEAR, BOW
     );
 
     public static final List<ToolLayout> CRAFTABLE = ALL.stream()

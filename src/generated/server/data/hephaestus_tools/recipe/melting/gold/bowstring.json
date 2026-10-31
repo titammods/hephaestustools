@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    }
+  ],
+  "type": "hephaestus:melting",
+  "fuel": {
+    "amount": 50,
+    "id": "hephaestus:molten_blaze"
+  },
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:gold"
+    },
+    "items": "hephaestus_tools:bowstring",
+    "strict": false
+  },
+  "result": {
+    "amount": 90,
+    "id": "hephaestus:molten_gold"
+  },
+  "temperature": 1060,
+  "time": 100
+}

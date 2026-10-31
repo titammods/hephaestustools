@@ -13,6 +13,15 @@ import net.minecraft.world.item.component.KineticWeapon;
 import net.minecraft.world.item.component.PiercingWeapon;
 import net.minecraft.world.item.component.SwingAnimation;
 import net.minecraft.world.item.component.UseEffects;
+import com.titammods.hephaestus_tools.effect.ToolEffects;
+import com.titammods.hephaestus_tools.effect.WearCause;
+import com.titammods.hephaestus_tools.tools.helper.ToolDurability;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemUseAnimation;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import java.util.ArrayList;
+import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -240,5 +249,75 @@ public final class ToolItems {
         @Override public float getAttackDamageBonus() { return 3.0f; }
         @Override public float getAttackDamageMultiplier() { return 1.5f; }
         @Override public float getBaseAttackSpeed() { return 1.0f; }
+    }
+
+    public static class BowItem extends ModifiableItem {
+        public static final float MIN_DRAW_SPEED = 0.25f;
+
+        public BowItem(Properties props) { super(props); }
+        @Override public Set<ToolCategory> categories() { return Set.of(); }
+
+        public static net.minecraft.world.item.BowItem vanillaBow() {
+            return (net.minecraft.world.item.BowItem) Items.BOW;
+        }
+
+        public static float drawSpeed(ItemStack stack) {
+            if (!ToolStack.isInitialized(stack)) return 1f;
+            return Math.max(MIN_DRAW_SPEED, ToolStack.getProperties(stack).getAttackSpeed());
+        }
+
+        public static float damageMultiplier(ItemStack stack) {
+            if (!ToolStack.isInitialized(stack)) return 1f;
+            return 1f + 0.25f * Math.max(0f, ToolStack.getProperties(stack).getAttackDamage()) * ToolStack.efficiency(stack);
+        }
+
+        @Override
+        public InteractionResult use(Level level, Player player, InteractionHand hand) {
+            if (!ToolStack.isUsable(player.getItemInHand(hand))) return InteractionResult.FAIL;
+            if (ToolEffects.itemUse(player.getItemInHand(hand)).isPresent()) return super.use(level, player, hand);
+            return vanillaBow().use(level, player, hand);
+        }
+
+        @Override
+        public ItemUseAnimation getUseAnimation(ItemStack stack) {
+            return ToolEffects.itemUse(stack).isPresent() ? super.getUseAnimation(stack) : vanillaBow().getUseAnimation(stack);
+        }
+
+        @Override
+        public int getUseDuration(ItemStack stack, LivingEntity user) {
+            return ToolEffects.itemUse(stack).isPresent() ? super.getUseDuration(stack, user) : vanillaBow().getUseDuration(stack, user);
+        }
+
+        @Override
+        public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entity, int remainingTime) {
+            if (ToolEffects.itemUse(stack).isPresent()) return super.releaseUsing(stack, level, entity, remainingTime);
+            int duration = vanillaBow().getUseDuration(stack, entity);
+            int held = Math.max(0, duration - remainingTime);
+            int scaled = Math.min(duration, Math.round(held * drawSpeed(stack)));
+            return vanillaBow().releaseUsing(stack, level, entity, duration - scaled);
+        }
+
+        @Override
+        public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @Nullable T entity, Consumer<Item> onBroken) {
+            if (!ToolDurability.pending() && entity != null && entity.level() instanceof ServerLevel serverLevel) {
+                ToolDurability.hurt(stack, amount, serverLevel, entity, WearCause.USE);
+                return 0;
+            }
+            return super.damageItem(stack, amount, entity, onBroken);
+        }
+
+        @Override
+        public void applyToolComponents(ItemStack stack, ToolPropertiesData properties) {
+            List<ItemAttributeModifiers.Entry> entries = new ArrayList<>(
+                    stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY).modifiers());
+            entries.removeIf(entry -> entry.modifier().id().equals(Item.BASE_ATTACK_DAMAGE_ID)
+                    || entry.modifier().id().equals(Item.BASE_ATTACK_SPEED_ID));
+            stack.set(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(List.copyOf(entries)));
+        }
+
+        @Override
+        public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
+            return ItemAttributeModifiers.EMPTY;
+        }
     }
 }

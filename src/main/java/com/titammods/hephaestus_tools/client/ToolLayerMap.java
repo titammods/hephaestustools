@@ -34,6 +34,7 @@ public final class ToolLayerMap {
             put(ModItems.SWORD.get(),        1, 0, 2);
             put(ModItems.MACE.get(),         1, 0);
             put(ModItems.SPEAR.get(),        1, 0, 2);
+            put(ModItems.BOW.get(),          1, 0, 2);
             put(ModItems.CLEAVER.get(),      1, 0, 3, 3);
             initialized = true;
         }

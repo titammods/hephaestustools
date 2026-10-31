@@ -144,6 +144,8 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
             PART_GHOST_TEXTURES.put(ModItems.TOUGH_BINDING.get(), tex("item/tool/parts/forge_patch"));
             PART_GHOST_TEXTURES.put(ModItems.MACE_HEAD.get(), tex("item/tool/parts/mace_head"));
             PART_GHOST_TEXTURES.put(ModItems.SPEAR_HEAD.get(), tex("item/tool/parts/spear_head"));
+            PART_GHOST_TEXTURES.put(ModItems.BOW_LIMB.get(), tex("item/tool/parts/bow_limb"));
+            PART_GHOST_TEXTURES.put(ModItems.BOWSTRING.get(), tex("item/tool/parts/bowstring"));
         }
         return PART_GHOST_TEXTURES;
     }

@@ -104,6 +104,7 @@ public final class ToolUpgrades {
         role(ModItems.CLEAVER.get(), ToolRole.COMBAT);
         role(ModItems.MACE.get(), ToolRole.COMBAT);
         role(ModItems.SPEAR.get(), ToolRole.COMBAT);
+        role(ModItems.BOW.get(), ToolRole.COMBAT);
     }
 
     private static void role(Item tool, ToolRole... roles) {
