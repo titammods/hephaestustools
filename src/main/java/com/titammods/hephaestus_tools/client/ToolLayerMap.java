@@ -33,6 +33,7 @@ public final class ToolLayerMap {
             put(ModItems.DAGGER.get(),       1, 1, 1, 0);
             put(ModItems.SWORD.get(),        1, 0, 2);
             put(ModItems.MACE.get(),         1, 0);
+            put(ModItems.SPEAR.get(),        1, 0, 2);
             put(ModItems.CLEAVER.get(),      1, 0, 3, 3);
             initialized = true;
         }

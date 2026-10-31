@@ -180,6 +180,8 @@ public abstract class ModifiableItem extends Item {
 
     public float getBaseAttackSpeed() { return -1f; }
 
+    public void applyToolComponents(ItemStack stack, ToolPropertiesData properties) {}
+
     @Override
     public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack) {
         if (!ToolStack.isInitialized(stack)) {

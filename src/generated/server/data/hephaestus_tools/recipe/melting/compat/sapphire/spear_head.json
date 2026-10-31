@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "ftbmaterials"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "iceandfire"
+        },
+        {
+          "type": "neoforge:mod_loaded",
+          "modid": "irons_jewelry"
+        }
+      ]
+    }
+  ],
+  "type": "hephaestus:melting",
+  "fuel": {
+    "amount": 50,
+    "id": "minecraft:lava"
+  },
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:sapphire"
+    },
+    "items": "hephaestus_tools:spear_head",
+    "strict": false
+  },
+  "result": {
+    "amount": 180,
+    "id": "hephaestus:molten_sapphire"
+  },
+  "temperature": 1000,
+  "time": 120
+}

@@ -172,13 +172,20 @@ public final class ToolLayouts {
                     in(21, 52, ModItems.TOOL_HANDLE.get(), TOOL_HANDLE)
             ));
 
+    public static final ToolLayout SPEAR = make("spear", ModItems.SPEAR.get(), HIDDEN,
+            List.of(
+                    in(53, 22, ModItems.SPEAR_HEAD.get(),   PICK_HEAD),
+                    in(15, 60, ModItems.TOOL_HANDLE.get(),  TOOL_HANDLE),
+                    in(33, 42, ModItems.TOOL_BINDING.get(), TOOL_BINDING)
+            ));
+
     public static final List<ToolLayout> ALL = List.of(
             REPAIR,
             PICKAXE, SLEDGE_HAMMER, VEIN_HAMMER,
             MATTOCK, PAXEL, EXCAVATOR,
             HAND_AXE, BROAD_AXE,
             KAMA, SCYTHE,
-            DAGGER, SWORD, CLEAVER, MACE
+            DAGGER, SWORD, CLEAVER, MACE, SPEAR
     );
 
     public static final List<ToolLayout> CRAFTABLE = ALL.stream()

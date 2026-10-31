@@ -185,6 +185,7 @@ public final class ToolStack {
         updateAttributeModifiers(stack, properties);
 
         updateToolComponent(stack, properties);
+        if (stack.getItem() instanceof ModifiableItem modItem) modItem.applyToolComponents(stack, properties);
         stack.set(DataComponents.MAX_DAMAGE, properties.getDurability());
         stack.set(DataComponents.ENCHANTABLE,
                 new Enchantable(

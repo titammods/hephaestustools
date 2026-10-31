@@ -94,6 +94,10 @@ public class ModItemModelProvider implements DataProvider {
         TOOL_LAYERS.put("mace", List.of(
                 "item/tool/mace/handle",
                 "item/tool/mace/head"));
+        TOOL_LAYERS.put("spear", List.of(
+                "item/tool/spear/handle",
+                "item/tool/spear/head",
+                "item/tool/spear/binding"));
     }
 
     private static final Map<String, List<String>> WORKBENCH_LAYERS = new LinkedHashMap<>();
@@ -107,13 +111,13 @@ public class ModItemModelProvider implements DataProvider {
 
     private static final List<String> PARTS = List.of(
             "pick_head", "hammer_head", "small_axe_head", "broad_axe_head", "adze_head", "large_plate",
-            "small_blade", "large_blade", "tool_handle", "tough_handle", "tool_binding", "tough_binding", "mace_head");
+            "small_blade", "large_blade", "tool_handle", "tough_handle", "tool_binding", "tough_binding", "mace_head", "spear_head");
 
     private static final List<String> PLAIN_ITEMS = List.of(
             "pattern", "forge_key",
             "pick_head_cast", "hammer_head_cast", "small_axe_head_cast", "broad_axe_head_cast",
             "adze_head_cast", "large_plate_cast", "small_blade_cast", "large_blade_cast",
-            "tool_handle_cast", "tough_handle_cast", "tool_binding_cast", "tough_binding_cast", "mace_head_cast");
+            "tool_handle_cast", "tough_handle_cast", "tool_binding_cast", "tough_binding_cast", "mace_head_cast", "spear_head_cast");
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {

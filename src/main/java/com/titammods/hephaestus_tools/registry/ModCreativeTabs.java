@@ -29,7 +29,7 @@ public class ModCreativeTabs {
                                 ModItems.PICKAXE.get(), ModItems.SLEDGE_HAMMER.get(),
                                 ModItems.MATTOCK.get(), ModItems.PAXEL.get(), ModItems.EXCAVATOR.get(), ModItems.HAND_AXE.get(),
                                 ModItems.BROAD_AXE.get(), ModItems.KAMA.get(), ModItems.SCYTHE.get(),
-                                ModItems.DAGGER.get(), ModItems.SWORD.get(), ModItems.CLEAVER.get(), ModItems.MACE.get()
+                                ModItems.DAGGER.get(), ModItems.SWORD.get(), ModItems.CLEAVER.get(), ModItems.MACE.get(), ModItems.SPEAR.get()
                         );
 
                         var materials = MaterialManager.getInstance().getAllMaterials();
@@ -56,7 +56,7 @@ public class ModCreativeTabs {
                                 ModItems.SMALL_BLADE.get(), ModItems.LARGE_BLADE.get(),
                                 ModItems.TOOL_HANDLE.get(), ModItems.TOUGH_HANDLE.get(),
                                 ModItems.TOOL_BINDING.get(), ModItems.TOUGH_BINDING.get(),
-                                ModItems.MACE_HEAD.get()
+                                ModItems.MACE_HEAD.get(), ModItems.SPEAR_HEAD.get()
                         );
                         if (materials.isEmpty()) {
                             for (var part : partItems) output.accept(part);
