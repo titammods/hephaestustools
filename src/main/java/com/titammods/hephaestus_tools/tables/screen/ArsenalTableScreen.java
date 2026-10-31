@@ -142,6 +142,7 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
             PART_GHOST_TEXTURES.put(ModItems.TOUGH_HANDLE.get(), tex("item/tool/parts/great_haft"));
             PART_GHOST_TEXTURES.put(ModItems.TOOL_BINDING.get(), tex("item/tool/parts/clamp_band"));
             PART_GHOST_TEXTURES.put(ModItems.TOUGH_BINDING.get(), tex("item/tool/parts/forge_patch"));
+            PART_GHOST_TEXTURES.put(ModItems.MACE_HEAD.get(), tex("item/tool/parts/mace_head"));
         }
         return PART_GHOST_TEXTURES;
     }
@@ -811,4 +812,4 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
         }
         return super.mouseScrolled(mx, my, horizontal, vertical);
     }
-}
+}

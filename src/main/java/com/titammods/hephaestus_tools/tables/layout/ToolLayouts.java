@@ -166,13 +166,19 @@ public final class ToolLayouts {
                     in(45, 46, ModItems.TOUGH_BINDING.get(),  LARGE_PLATE)
             ));
 
+    public static final ToolLayout MACE = make("mace", ModItems.MACE.get(), HIDDEN,
+            List.of(
+                    in(44, 29, ModItems.MACE_HEAD.get(),   HAMMER_HEAD),
+                    in(21, 52, ModItems.TOOL_HANDLE.get(), TOOL_HANDLE)
+            ));
+
     public static final List<ToolLayout> ALL = List.of(
             REPAIR,
             PICKAXE, SLEDGE_HAMMER, VEIN_HAMMER,
             MATTOCK, PAXEL, EXCAVATOR,
             HAND_AXE, BROAD_AXE,
             KAMA, SCYTHE,
-            DAGGER, SWORD, CLEAVER
+            DAGGER, SWORD, CLEAVER, MACE
     );
 
     public static final List<ToolLayout> CRAFTABLE = ALL.stream()

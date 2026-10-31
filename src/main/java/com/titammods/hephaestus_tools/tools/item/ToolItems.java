@@ -1,13 +1,20 @@
 package com.titammods.hephaestus_tools.tools.item;
 
 import com.titammods.hephaestus_tools.tools.aoe.IAoeTool;
+import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
@@ -93,6 +100,45 @@ public final class ToolItems {
         public SwordItem(Properties props) { super(props); }
         @Override public float getAttackDamageBonus() { return 3.0f; }
         @Override public float getBaseAttackSpeed() { return 1.6f; }
+    }
+
+    public static class MaceItem extends ModifiableItem {
+        public MaceItem(Properties props) { super(props); }
+        @Override public Set<ToolCategory> categories() { return Set.of(); }
+        @Override public float getAttackDamageBonus() { return 4.0f; }
+        @Override public float getBaseAttackSpeed() { return 0.6f; }
+
+        private static boolean smashes(LivingEntity attacker) {
+            return ToolStack.isUsable(attacker.getWeaponItem()) && net.minecraft.world.item.MaceItem.canSmashAttack(attacker);
+        }
+
+        @Override
+        public float getAttackDamageBonus(Entity victim, float damage, DamageSource source) {
+            if (!(source.getDirectEntity() instanceof LivingEntity attacker) || !smashes(attacker)) return 0f;
+            return vanillaMace().getAttackDamageBonus(victim, damage, source);
+        }
+
+        @Override
+        public void hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+            boolean smash = smashes(attacker);
+            super.hurtEnemy(stack, target, attacker);
+            if (smash) vanillaMace().hurtEnemy(stack, target, attacker);
+        }
+
+        @Override
+        public void postHurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+            super.postHurtEnemy(stack, target, attacker);
+            vanillaMace().postHurtEnemy(stack, target, attacker);
+        }
+
+        @Override
+        public @Nullable DamageSource getItemDamageSource(LivingEntity attacker) {
+            return smashes(attacker) ? vanillaMace().getItemDamageSource(attacker) : super.getItemDamageSource(attacker);
+        }
+
+        private static net.minecraft.world.item.MaceItem vanillaMace() {
+            return (net.minecraft.world.item.MaceItem) Items.MACE;
+        }
     }
 
     public static class CleaverItem extends ModifiableSwordItem {

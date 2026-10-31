@@ -81,7 +81,8 @@ public class PartCastingMeltingProvider implements DataProvider {
             new Part("tool_handle", 90),
             new Part("tough_handle", 270),
             new Part("tool_binding", 90),
-            new Part("tough_binding", 270)
+            new Part("tough_binding", 270),
+            new Part("mace_head", 720)
     );
 
     private static final List<Metal> METALS = List.of(

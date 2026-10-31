@@ -1,0 +1,9 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "hephaestus_tools:item/tool/mace_overlay",
+    "model": {
+      "type": "hephaestus_tools:tool_modifiers"
+    }
+  }
+}

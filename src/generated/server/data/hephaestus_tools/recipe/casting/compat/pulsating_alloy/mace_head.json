@@ -1,0 +1,24 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "enderio"
+    }
+  ],
+  "type": "hephaestus:casting_table",
+  "cast": "hephaestus_tools:mace_head_cast",
+  "cast_consumed": false,
+  "cooling_time": 240,
+  "fluid": {
+    "amount": 720,
+    "id": "hephaestus:molten_pulsating_alloy"
+  },
+  "result": {
+    "count": 1,
+    "id": "hephaestus_tools:mace_head"
+  }
+}

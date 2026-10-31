@@ -1,0 +1,20 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    }
+  ],
+  "type": "hephaestus:casting_table",
+  "cast": "hephaestus_tools:mace_head",
+  "cast_consumed": true,
+  "cooling_time": 100,
+  "fluid": {
+    "amount": 90,
+    "id": "hephaestus:molten_copper"
+  },
+  "result": {
+    "count": 1,
+    "id": "hephaestus_tools:mace_head_cast"
+  }
+}

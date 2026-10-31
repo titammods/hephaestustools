@@ -38,7 +38,8 @@ public class ModRecipeProvider implements DataProvider {
             new Part("tool_handle", 1),
             new Part("tough_handle", 3),
             new Part("tool_binding", 1),
-            new Part("tough_binding", 3)
+            new Part("tough_binding", 3),
+            new Part("mace_head", 8)
     );
 
     @Override

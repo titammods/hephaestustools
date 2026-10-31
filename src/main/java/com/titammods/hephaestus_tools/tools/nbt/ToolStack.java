@@ -223,10 +223,11 @@ public final class ToolStack {
 
         Set<ToolCategory> categories = modItem.categories();
         boolean sword = categories.contains(ToolCategory.SWORD);
+        boolean weapon = sword || categories.isEmpty();
 
         float efficiency = efficiency(stack);
         if (efficiency <= 0f) {
-            stack.set(DataComponents.TOOL, new Tool(List.of(), 0.0f, 1, !sword));
+            stack.set(DataComponents.TOOL, new Tool(List.of(), 0.0f, 1, !weapon));
             return;
         }
 
@@ -249,7 +250,7 @@ public final class ToolStack {
             rules.add(Tool.Rule.minesAndDrops(blocks.getOrThrow(category.tag), speed));
         }
 
-        stack.set(DataComponents.TOOL, new Tool(List.copyOf(rules), 1.0f, 1, !sword));
+        stack.set(DataComponents.TOOL, new Tool(List.copyOf(rules), 1.0f, 1, !weapon));
     }
 
     public static ItemStack createTool(ItemStack template, List<MaterialId> materials) {

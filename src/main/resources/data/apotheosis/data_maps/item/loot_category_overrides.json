@@ -18,6 +18,7 @@
     "hephaestus_tools:scythe": "apotheosis:melee_weapon",
     "hephaestus_tools:dagger": "apotheosis:melee_weapon",
     "hephaestus_tools:sword": "apotheosis:melee_weapon",
-    "hephaestus_tools:cleaver": "apotheosis:melee_weapon"
+    "hephaestus_tools:cleaver": "apotheosis:melee_weapon",
+    "hephaestus_tools:mace": "apotheosis:melee_weapon"
   }
 }

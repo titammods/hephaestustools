@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "hephaestus"
+    },
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "occultism"
+    }
+  ],
+  "type": "hephaestus:melting",
+  "fuel": {
+    "amount": 50,
+    "id": "hephaestus:molten_blaze"
+  },
+  "ingredient": {
+    "neoforge:ingredient_type": "neoforge:components",
+    "components": {
+      "hephaestus_tools:part_material": "hephaestus_tools:iesnium"
+    },
+    "items": "hephaestus_tools:mace_head",
+    "strict": false
+  },
+  "result": {
+    "amount": 720,
+    "id": "hephaestus:molten_iesnium"
+  },
+  "temperature": 1200,
+  "time": 240
+}

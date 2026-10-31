@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "hephaestus_tools:item/mace_head",
+    "tints": [
+      {
+        "type": "hephaestus_tools:part_material",
+        "index": 0
+      }
+    ]
+  }
+}

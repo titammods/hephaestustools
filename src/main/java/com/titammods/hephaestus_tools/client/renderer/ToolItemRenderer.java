@@ -105,7 +105,10 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
                     "item/tool/cleaver/handle",
                     "item/tool/cleaver/head",
                     "item/tool/cleaver/shield",
-                    "item/tool/cleaver/guard"))
+                    "item/tool/cleaver/guard")),
+            Map.entry("mace", List.of(
+                    "item/tool/mace/handle",
+                    "item/tool/mace/head"))
     );
 
     private static final Map<String, List<String>> WORKBENCH_LAYERS = Map.ofEntries(
@@ -228,10 +231,13 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
         if (!ToolStack.isInitialized(stack)) return out;
         for (ToolConstructionData.ModifierEntry mod : ToolStack.getModifiers(stack)) {
             if (mod.level() <= 0) continue;
-            Identifier tex = ModifierModelRegistry.getTexture(stack.getItem(), mod.id());
-            if (tex == null) continue;
-            Identifier png = pngOf(tex);
-            if (exists(png)) out.add(png);
+            for (Identifier tex : ModifierModelRegistry.candidates(stack.getItem(), mod.id())) {
+                Identifier png = pngOf(tex);
+                if (exists(png)) {
+                    out.add(png);
+                    break;
+                }
+            }
         }
         return out;
     }
