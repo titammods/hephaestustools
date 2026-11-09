@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "hephaestus_tools:item/tool/cleaver/handle",
-    "layer1": "hephaestus_tools:item/tool/cleaver/head",
-    "layer2": "hephaestus_tools:item/tool/cleaver/shield",
-    "layer3": "hephaestus_tools:item/tool/cleaver/guard"
-  }
-}

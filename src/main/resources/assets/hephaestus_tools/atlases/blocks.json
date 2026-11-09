@@ -2,11 +2,6 @@
   "sources": [
     {
       "type": "minecraft:directory",
-      "source": "gui/tinker_pattern",
-      "prefix": "gui/tinker_pattern/"
-    },
-    {
-      "type": "minecraft:directory",
       "source": "item/tool",
       "prefix": "item/tool/"
     }

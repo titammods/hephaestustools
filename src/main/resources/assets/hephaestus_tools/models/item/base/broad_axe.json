@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "hephaestus_tools:item/tool/broad_axe/handle",
-    "layer1": "hephaestus_tools:item/tool/broad_axe/blade",
-    "layer2": "hephaestus_tools:item/tool/broad_axe/back",
-    "layer3": "hephaestus_tools:item/tool/broad_axe/binding"
-  }
-}

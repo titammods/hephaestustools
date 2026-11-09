@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "hephaestus_tools:item/tool/vein_hammer/handle",
-    "layer1": "hephaestus_tools:item/tool/vein_hammer/head",
-    "layer2": "hephaestus_tools:item/tool/vein_hammer/front",
-    "layer3": "hephaestus_tools:item/tool/vein_hammer/grip"
-  }
-}

@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "hephaestus_tools:item/tool/mattock/handle",
-    "layer1": "hephaestus_tools:item/tool/mattock/axe",
-    "layer2": "hephaestus_tools:item/tool/mattock/pick"
-  }
-}
