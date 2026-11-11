@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "neovitae"
+    }
+  ],
+  "tool": "hephaestus_tools:staff",
+  "traits": [
+    {
+      "id": "anima_bound"
+    }
+  ]
+}

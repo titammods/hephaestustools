@@ -6,6 +6,10 @@
     "hephaestus_tools:cleaver",
     "hephaestus_tools:mace",
     "hephaestus_tools:spear",
-    "hephaestus_tools:bow"
+    "hephaestus_tools:bow",
+    {
+      "id": "hephaestus_tools:staff",
+      "required": false
+    }
   ]
 }

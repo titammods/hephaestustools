@@ -15,6 +15,10 @@
     "hephaestus_tools:kama",
     "hephaestus_tools:scythe",
     "hephaestus_tools:mace",
-    "hephaestus_tools:bow"
+    "hephaestus_tools:bow",
+    {
+      "id": "hephaestus_tools:staff",
+      "required": false
+    }
   ]
 }

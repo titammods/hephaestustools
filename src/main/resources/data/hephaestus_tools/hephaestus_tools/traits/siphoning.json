@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "neovitae"
+    }
+  ],
+  "max_level": 3,
+  "effects": [
+    {
+      "type": "hephaestus_tools:anima_siphon",
+      "per_damage": [
+        4.0,
+        6.0,
+        8.0
+      ]
+    }
+  ]
+}

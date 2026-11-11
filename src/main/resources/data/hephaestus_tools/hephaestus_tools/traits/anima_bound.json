@@ -1,0 +1,16 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "neovitae"
+    }
+  ],
+  "effects": [
+    {
+      "type": "hephaestus_tools:anima_repair",
+      "interval": 100,
+      "cost": 40.0,
+      "amount": 1.0
+    }
+  ]
+}

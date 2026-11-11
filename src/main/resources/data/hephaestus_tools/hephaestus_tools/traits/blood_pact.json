@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "neovitae"
+    }
+  ],
+  "effects": [
+    {
+      "type": "hephaestus_tools:blood_pact",
+      "cost": 25.0
+    }
+  ]
+}

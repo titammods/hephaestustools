@@ -19,15 +19,30 @@
     "attack_damage": 4.5,
     "attack_speed": 1.0,
     "tier": 5,
-    "enchantability": 14
+    "enchantability": 14,
+    "traits": [
+      {
+        "id": "siphoning"
+      }
+    ]
   },
   "handle_stats": {
     "durability_mult": 0.15,
     "speed_mult": 0.04,
     "damage_mult": 0.12,
-    "attack_speed_mult": 0.0
+    "attack_speed_mult": 0.0,
+    "traits": [
+      {
+        "id": "blood_pact"
+      }
+    ]
   },
   "binding_stats": {
-    "durability": 300
+    "durability": 300,
+    "traits": [
+      {
+        "id": "siphoning"
+      }
+    ]
   }
 }
