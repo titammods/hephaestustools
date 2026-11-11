@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "hephaestus_tools:item/tool/staff/handle",
+    "layer1": "hephaestus_tools:item/tool/staff/head",
+    "layer2": "hephaestus_tools:item/tool/staff/binding",
+    "layer3": "hephaestus_tools:item/tool/staff/orb"
+  }
+}
