@@ -113,6 +113,11 @@ public class ToolItemRenderer implements SpecialModelRenderer<ToolItemRenderer.R
                     "item/tool/spear/handle",
                     "item/tool/spear/head",
                     "item/tool/spear/binding")),
+            Map.entry("staff", List.of(
+                    "item/tool/staff/handle",
+                    "item/tool/staff/head",
+                    "item/tool/staff/binding",
+                    "item/tool/staff/orb")),
             Map.entry("bow", List.of(
                     "item/tool/bow/grip",
                     "item/tool/bow/limb",

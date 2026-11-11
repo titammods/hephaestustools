@@ -24,7 +24,11 @@ public class ModRecipeProvider implements DataProvider {
         this.recipePath = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipe");
     }
 
-    private record Part(String name, int cost) {}
+    private record Part(String name, int cost, String mod) {
+        Part(String name, int cost) {
+            this(name, cost, "");
+        }
+    }
 
     private static final List<Part> PARTS = List.of(
             new Part("pick_head", 2),
@@ -42,7 +46,8 @@ public class ModRecipeProvider implements DataProvider {
             new Part("mace_head", 8),
             new Part("spear_head", 2),
             new Part("bow_limb", 3),
-            new Part("bowstring", 1)
+            new Part("bowstring", 1),
+            new Part("staff_focus", 3, "neovitae")
     );
 
     @Override
@@ -63,6 +68,14 @@ public class ModRecipeProvider implements DataProvider {
 
     private JsonObject woodStonecutting(Part part) {
         JsonObject json = new JsonObject();
+        if (!part.mod().isEmpty()) {
+            JsonObject condition = new JsonObject();
+            condition.addProperty("type", "neoforge:mod_loaded");
+            condition.addProperty("modid", part.mod());
+            JsonArray conditions = new JsonArray();
+            conditions.add(condition);
+            json.add("neoforge:conditions", conditions);
+        }
         json.addProperty("type", "minecraft:stonecutting");
         json.addProperty("ingredient", PATTERN);
 

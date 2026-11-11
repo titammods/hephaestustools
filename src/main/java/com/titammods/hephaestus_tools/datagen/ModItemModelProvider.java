@@ -98,6 +98,11 @@ public class ModItemModelProvider implements DataProvider {
                 "item/tool/spear/handle",
                 "item/tool/spear/head",
                 "item/tool/spear/binding"));
+        TOOL_LAYERS.put("staff", List.of(
+                "item/tool/staff/handle",
+                "item/tool/staff/head",
+                "item/tool/staff/binding",
+                "item/tool/staff/orb"));
         TOOL_LAYERS.put("bow", List.of(
                 "item/tool/bow/grip",
                 "item/tool/bow/limb",
@@ -115,13 +120,13 @@ public class ModItemModelProvider implements DataProvider {
 
     private static final List<String> PARTS = List.of(
             "pick_head", "hammer_head", "small_axe_head", "broad_axe_head", "adze_head", "large_plate",
-            "small_blade", "large_blade", "tool_handle", "tough_handle", "tool_binding", "tough_binding", "mace_head", "spear_head", "bow_limb", "bowstring");
+            "small_blade", "large_blade", "tool_handle", "tough_handle", "tool_binding", "tough_binding", "mace_head", "spear_head", "bow_limb", "bowstring", "staff_focus");
 
     private static final List<String> PLAIN_ITEMS = List.of(
             "pattern", "forge_key",
             "pick_head_cast", "hammer_head_cast", "small_axe_head_cast", "broad_axe_head_cast",
             "adze_head_cast", "large_plate_cast", "small_blade_cast", "large_blade_cast",
-            "tool_handle_cast", "tough_handle_cast", "tool_binding_cast", "tough_binding_cast", "mace_head_cast", "spear_head_cast", "bow_limb_cast", "bowstring_cast");
+            "tool_handle_cast", "tough_handle_cast", "tool_binding_cast", "tough_binding_cast", "mace_head_cast", "spear_head_cast", "bow_limb_cast", "bowstring_cast", "staff_focus_cast");
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {

@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.tools.modifier;
 
+import com.titammods.hephaestus_tools.compat.neovitae.StaffModifiers;
 import com.titammods.hephaestus_tools.materials.tier.BuiltInTiers;
 import com.titammods.hephaestus_tools.tools.stat.HarvestTier;
 import net.minecraft.resources.Identifier;
@@ -65,6 +66,7 @@ public final class ModifierEffects {
         register(SILK_TOUCH, (stats, lvl) -> {});
         register(FLAME,      (stats, lvl) -> {});
         register(SWEEPING,   (stats, lvl) -> {});
+        for (Identifier staffModifier : StaffModifiers.ALL) register(staffModifier, (stats, lvl) -> {});
     }
 
     private static Identifier id(String path) {

@@ -1,11 +1,14 @@
 package com.titammods.hephaestus_tools.tables.layout;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
 import com.titammods.hephaestus_tools.registry.ModItems;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public final class ToolLayouts {
 
@@ -160,14 +163,23 @@ public final class ToolLayouts {
                     in(33, 42, ModItems.BOWSTRING.get())
             ));
 
-    public static final List<ToolLayout> ALL = List.of(
+    public static final ToolLayout STAFF = NeoVitaeCompat.LOADED
+            ? make("staff", NeoVitaeCompat.STAFF.get(), HIDDEN,
+            List.of(
+                    in(53, 22, NeoVitaeCompat.STAFF_FOCUS.get()),
+                    in(15, 60, ModItems.TOUGH_HANDLE.get()),
+                    in(33, 42, ModItems.TOOL_BINDING.get())
+            ))
+            : null;
+
+    public static final List<ToolLayout> ALL = Stream.of(
             REPAIR,
             PICKAXE, SLEDGE_HAMMER, VEIN_HAMMER,
             MATTOCK, PAXEL, EXCAVATOR,
             HAND_AXE, BROAD_AXE,
             KAMA, SCYTHE,
-            DAGGER, SWORD, CLEAVER, MACE, SPEAR, BOW
-    );
+            DAGGER, SWORD, CLEAVER, MACE, SPEAR, BOW, STAFF
+    ).filter(Objects::nonNull).toList();
 
     public static final List<ToolLayout> CRAFTABLE = ALL.stream()
             .filter(layout -> layout != VEIN_HAMMER)

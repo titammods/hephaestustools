@@ -31,7 +31,8 @@ public final class ToolMastery {
             Map.entry("scythe", List.of("reaper", "harvest_chain", "death_sweep")),
             Map.entry("dagger", List.of("backstab", "flurry", "assassin")),
             Map.entry("sword", List.of("duelist", "executioner", "blade_dance")),
-            Map.entry("cleaver", List.of("butcher", "crushing_blow", "bloodlust"))
+            Map.entry("cleaver", List.of("butcher", "crushing_blow", "bloodlust")),
+            Map.entry("staff", List.of("hemomancer", "sigil_weaver", "soul_reaver"))
     );
 
     private static final Set<String> OFFERED =

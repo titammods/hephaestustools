@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.compat.jei;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
 import com.titammods.compat.jei.TitamModsJEIPlugin;
 import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.materials.MaterialId;
@@ -32,6 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.HashSet;
 import java.util.Set;
 
 @JeiPlugin
@@ -48,13 +50,15 @@ public class HephaestusToolsJeiPlugin implements IModPlugin {
     }
 
     private static Set<Item> partItems() {
-        return Set.of(
+        Set<Item> parts = new HashSet<>(Set.of(
                 ModItems.PICK_HEAD.get(), ModItems.HAMMER_HEAD.get(), ModItems.SMALL_AXE_HEAD.get(),
                 ModItems.BROAD_AXE_HEAD.get(), ModItems.ADZE_HEAD.get(), ModItems.LARGE_PLATE.get(),
                 ModItems.SMALL_BLADE.get(), ModItems.LARGE_BLADE.get(), ModItems.TOOL_HANDLE.get(),
                 ModItems.TOUGH_HANDLE.get(), ModItems.TOOL_BINDING.get(), ModItems.TOUGH_BINDING.get(),
                 ModItems.MACE_HEAD.get(), ModItems.SPEAR_HEAD.get(),
-                ModItems.BOW_LIMB.get(), ModItems.BOWSTRING.get());
+                ModItems.BOW_LIMB.get(), ModItems.BOWSTRING.get()));
+        parts.addAll(NeoVitaeCompat.parts());
+        return parts;
     }
 
     @Override

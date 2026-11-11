@@ -22,7 +22,11 @@ public class PartCastingMeltingProvider implements DataProvider {
         this.recipePath = output.createPathProvider(PackOutput.Target.DATA_PACK, "recipe");
     }
 
-    private record Part(String name, int cost) {}
+    private record Part(String name, int cost, String mod) {
+        Part(String name, int cost) {
+            this(name, cost, "");
+        }
+    }
 
     private record Metal(String name, int temp, List<String> mods, String fluid) {
         Metal(String name, int temp, List<String> mods) {
@@ -85,7 +89,8 @@ public class PartCastingMeltingProvider implements DataProvider {
             new Part("mace_head", 720),
             new Part("spear_head", 180),
             new Part("bow_limb", 270),
-            new Part("bowstring", 90)
+            new Part("bowstring", 90),
+            new Part("staff_focus", 270, "neovitae")
     );
 
     private static final List<Metal> METALS = List.of(
@@ -206,7 +211,7 @@ public class PartCastingMeltingProvider implements DataProvider {
 
     private JsonObject casting(Part part, Metal metal) {
         JsonObject json = new JsonObject();
-        addConditions(json, metal.mods());
+        addConditions(json, metal.mods(), part);
         json.addProperty("type", FORGE + ":casting_table");
 
         json.addProperty("cast", TOOLS + ":" + part.name() + "_cast");
@@ -219,7 +224,7 @@ public class PartCastingMeltingProvider implements DataProvider {
 
     private JsonObject castCreation(Part part) {
         JsonObject json = new JsonObject();
-        addConditions(json, NO_MODS);
+        addConditions(json, NO_MODS, part);
         json.addProperty("type", FORGE + ":casting_table");
 
         json.addProperty("cast", TOOLS + ":" + part.name());
@@ -232,7 +237,7 @@ public class PartCastingMeltingProvider implements DataProvider {
 
     private JsonObject melting(Part part, Metal metal) {
         JsonObject json = new JsonObject();
-        addConditions(json, metal.mods());
+        addConditions(json, metal.mods(), part);
         json.addProperty("type", FORGE + ":melting");
 
         JsonObject ingredient = new JsonObject();
@@ -269,9 +274,10 @@ public class PartCastingMeltingProvider implements DataProvider {
         return temp <= 1000 ? fluid("minecraft:lava", 50) : fluid(FORGE + ":molten_blaze", 50);
     }
 
-    private static void addConditions(JsonObject json, List<String> mods) {
+    private static void addConditions(JsonObject json, List<String> mods, Part part) {
         JsonArray conditions = new JsonArray();
         conditions.add(modLoaded(FORGE));
+        if (!part.mod().isEmpty() && !mods.equals(List.of(part.mod()))) conditions.add(modLoaded(part.mod()));
         if (mods.size() == 1) {
             conditions.add(modLoaded(mods.get(0)));
         } else if (mods.size() > 1) {

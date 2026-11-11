@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.registry;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
 import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.materials.MaterialStats;
 import com.titammods.hephaestus_tools.materials.MaterialManager;
@@ -12,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -25,12 +27,13 @@ public class ModCreativeTabs {
                     .title(Component.translatable("itemGroup.hephaestus_tools.tools"))
                     .icon(() -> new ItemStack(ModBlocks.ARSENAL_TABLE.get()))
                     .displayItems((params, output) -> {
-                        List<Item> tools = List.of(
+                        List<Item> tools = new ArrayList<>(List.of(
                                 ModItems.PICKAXE.get(), ModItems.SLEDGE_HAMMER.get(),
                                 ModItems.MATTOCK.get(), ModItems.PAXEL.get(), ModItems.EXCAVATOR.get(), ModItems.HAND_AXE.get(),
                                 ModItems.BROAD_AXE.get(), ModItems.KAMA.get(), ModItems.SCYTHE.get(),
                                 ModItems.DAGGER.get(), ModItems.SWORD.get(), ModItems.CLEAVER.get(), ModItems.MACE.get(), ModItems.SPEAR.get(), ModItems.BOW.get()
-                        );
+                        ));
+                        tools.addAll(NeoVitaeCompat.tools());
 
                         var materials = MaterialManager.getInstance().getAllMaterials();
 
@@ -49,7 +52,7 @@ public class ModCreativeTabs {
                             }
                         }
 
-                        List<Item> partItems = List.of(
+                        List<Item> partItems = new ArrayList<>(List.of(
                                 ModItems.PICK_HEAD.get(), ModItems.HAMMER_HEAD.get(),
                                 ModItems.SMALL_AXE_HEAD.get(), ModItems.BROAD_AXE_HEAD.get(),
                                 ModItems.ADZE_HEAD.get(), ModItems.LARGE_PLATE.get(),
@@ -58,7 +61,8 @@ public class ModCreativeTabs {
                                 ModItems.TOOL_BINDING.get(), ModItems.TOUGH_BINDING.get(),
                                 ModItems.MACE_HEAD.get(), ModItems.SPEAR_HEAD.get(),
                                 ModItems.BOW_LIMB.get(), ModItems.BOWSTRING.get()
-                        );
+                        ));
+                        partItems.addAll(NeoVitaeCompat.parts());
                         if (materials.isEmpty()) {
                             for (var part : partItems) output.accept(part);
                         } else {
@@ -81,6 +85,7 @@ public class ModCreativeTabs {
                         output.accept(ModItems.PATTERN.get());
                         output.accept(ModItems.FORGE_KEY.get());
                         for (var cast : ModItems.CASTS) output.accept(cast.get());
+                        for (var cast : NeoVitaeCompat.casts()) output.accept(cast);
                         output.accept(ModBlocks.ARSENAL_TABLE.get());
                     })
                     .build()

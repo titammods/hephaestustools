@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.tables.screen;
 
+import com.titammods.hephaestus_tools.compat.neovitae.StaffModifiers;
 import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.client.renderer.ToolItemRenderer;
 import com.titammods.hephaestus_tools.client.workbench.WorkbenchAssembly;
@@ -1928,6 +1929,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     private int categoryColor(ToolUpgrade up) {
         var r = up.roles();
         if (r.size() > 1) return 0xFF55FFFF;
+        if (r.contains(ToolRole.MAGIC)) return 0xFFC8A2FF;
         if (r.contains(ToolRole.COMBAT)) return 0xFFFF5555;
         if (r.contains(ToolRole.MINING)) return 0xFF55FF55;
         return 0xFFFFFF55;
@@ -1936,6 +1938,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
     private String categoryKey(ToolUpgrade up) {
         var r = up.roles();
         if (r.size() > 1) return "cat_utility";
+        if (r.contains(ToolRole.MAGIC)) return "cat_magic";
         if (r.contains(ToolRole.COMBAT)) return "cat_combat";
         if (r.contains(ToolRole.MINING)) return "cat_mining";
         return "cat_harvest";
@@ -2030,6 +2033,7 @@ public class WorkbenchScreen extends AbstractContainerScreen<WorkbenchMenu> {
         String name = id.getPath();
         if (name.equals("looting")) name = "fortune";
         return List.of("reinforced", "haste", "fortune", "sharpness", "silk_touch", "flame", "sweeping", "looting").contains(name)
+                || StaffModifiers.ALL.contains(id)
                 ? rl("workbench/modifier_icon/modifier_" + (name.equals("silk_touch") ? "silky" : name) + ".png") : null;
     }
 

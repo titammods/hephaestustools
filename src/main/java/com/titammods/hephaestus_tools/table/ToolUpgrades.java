@@ -1,5 +1,7 @@
 package com.titammods.hephaestus_tools.table;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
+import com.titammods.hephaestus_tools.compat.neovitae.StaffModifiers;
 import com.titammods.hephaestus_tools.registry.ModItems;
 import com.titammods.hephaestus_tools.tables.menu.WorkbenchMenu;
 import com.titammods.hephaestus_tools.tools.item.ModifiableItem;
@@ -42,10 +44,14 @@ public final class ToolUpgrades {
         return currentLevel(tool, up) == 0 && usedSlots(tool) >= unlockedSlots(tool);
     }
 
-    private static final Map<String, Set<String>> INCOMPATIBLE = Map.of(
-            "silk_touch", Set.of("fortune", "looting"),
-            "fortune",    Set.of("silk_touch"),
-            "looting",    Set.of("silk_touch"));
+    private static final Map<String, Set<String>> INCOMPATIBLE = Map.ofEntries(
+            Map.entry("silk_touch", Set.of("fortune", "looting")),
+            Map.entry("fortune",    Set.of("silk_touch")),
+            Map.entry("looting",    Set.of("silk_touch")),
+            Map.entry("corrosive_infusion",   Set.of("destructive_infusion", "steadfast_infusion", "vengeful_infusion")),
+            Map.entry("destructive_infusion", Set.of("corrosive_infusion", "steadfast_infusion", "vengeful_infusion")),
+            Map.entry("steadfast_infusion",   Set.of("corrosive_infusion", "destructive_infusion", "vengeful_infusion")),
+            Map.entry("vengeful_infusion",    Set.of("corrosive_infusion", "destructive_infusion", "steadfast_infusion")));
 
     private static final Map<Item, Set<ToolRole>> TOOL_ROLES = new HashMap<>();
     private static boolean built = false;
@@ -105,6 +111,10 @@ public final class ToolUpgrades {
         role(ModItems.MACE.get(), ToolRole.COMBAT);
         role(ModItems.SPEAR.get(), ToolRole.COMBAT);
         role(ModItems.BOW.get(), ToolRole.COMBAT);
+        if (NeoVitaeCompat.LOADED) {
+            StaffModifiers.addUpgrades(REGISTRY);
+            role(NeoVitaeCompat.STAFF.get(), ToolRole.MAGIC);
+        }
     }
 
     private static void role(Item tool, ToolRole... roles) {

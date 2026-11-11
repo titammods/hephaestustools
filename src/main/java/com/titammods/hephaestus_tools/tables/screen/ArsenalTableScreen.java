@@ -1,5 +1,7 @@
 package com.titammods.hephaestus_tools.tables.screen;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
+import com.titammods.hephaestus_tools.compat.neovitae.StaffModifiers;
 import com.titammods.hephaestus_tools.HephaestusTools;
 import com.titammods.hephaestus_tools.client.renderer.ToolItemRenderer;
 import com.titammods.hephaestus_tools.materials.trait.ToolTraits;
@@ -146,6 +148,7 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
             PART_GHOST_TEXTURES.put(ModItems.SPEAR_HEAD.get(), tex("item/tool/parts/spear_head"));
             PART_GHOST_TEXTURES.put(ModItems.BOW_LIMB.get(), tex("item/tool/parts/bow_limb"));
             PART_GHOST_TEXTURES.put(ModItems.BOWSTRING.get(), tex("item/tool/parts/bowstring"));
+            if (NeoVitaeCompat.LOADED) PART_GHOST_TEXTURES.put(NeoVitaeCompat.STAFF_FOCUS.get(), tex("item/tool/parts/staff_focus"));
         }
         return PART_GHOST_TEXTURES;
     }
@@ -609,6 +612,7 @@ public class ArsenalTableScreen extends AbstractContainerScreen<ArsenalTableMenu
         String name = id.getPath();
         if (name.equals("looting")) name = "fortune";
         return List.of("reinforced", "haste", "fortune", "sharpness", "silk_touch", "flame", "sweeping", "looting").contains(name)
+                || StaffModifiers.ALL.contains(id)
                 ? rl("modifier_icon/modifier_" + (name.equals("silk_touch") ? "silky" : name.equals("looting") ? "fortune" : name) + ".png")
                 : null;
     }

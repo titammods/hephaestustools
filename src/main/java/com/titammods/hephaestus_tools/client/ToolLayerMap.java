@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools.client;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
 import com.titammods.hephaestus_tools.registry.ModItems;
 import net.minecraft.world.item.Item;
 
@@ -36,6 +37,7 @@ public final class ToolLayerMap {
             put(ModItems.SPEAR.get(),        1, 0, 2);
             put(ModItems.BOW.get(),          1, 0, 2);
             put(ModItems.CLEAVER.get(),      1, 0, 3, 3);
+            if (NeoVitaeCompat.LOADED) put(NeoVitaeCompat.STAFF.get(), 1, 0, 2, -1);
             initialized = true;
         }
     }

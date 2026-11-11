@@ -1,5 +1,6 @@
 package com.titammods.hephaestus_tools;
 
+import com.titammods.hephaestus_tools.compat.neovitae.NeoVitaeCompat;
 import com.titammods.hephaestus_tools.compat.jei.CastingRecipeSync;
 import com.titammods.hephaestus_tools.config.HephaestusConfig;
 import com.titammods.hephaestus_tools.datagen.ModDataGenerators;
@@ -29,6 +30,7 @@ public class HephaestusTools {
         ModComponents.REGISTRAR.register(modBus);
         ModBlocks.BLOCKS.register(modBus);
         ModBlocks.BLOCK_ENTITIES.register(modBus);
+        NeoVitaeCompat.init();
         ModItems.ITEMS.register(modBus);
         ModMenus.MENUS.register(modBus);
         ModCreativeTabs.TABS.register(modBus);
