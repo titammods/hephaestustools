@@ -127,6 +127,12 @@ dependencies {
     implementation "curse.maven:ftb-materials-1124942:9088226"
     implementation "curse.maven:ftb-library-forge-404465:9008066"
 
+    implementation "curse.maven:curios-309927:8463519"
+    implementation "curse.maven:neovitae-1404763:9544255"
+    implementation "curse.maven:animus-229664:9544084"
+    implementation "curse.maven:geckolib-388172:8327201"
+    implementation "curse.maven:modonomicon-538392:9470588"
+
     implementation("com.zigythebird.playeranim:PlayerAnimationLibNeo:${pal_version}") {
         exclude group: "com.google.code.gson", module: "gson"
         exclude group: "io.netty"

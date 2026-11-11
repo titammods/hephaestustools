@@ -31,6 +31,13 @@ ordering="AFTER"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
+modId="neovitae"
+type="optional"
+versionRange="[0,)"
+ordering="AFTER"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
 modId="player_animation_library"
 type="required"
 versionRange="[1.2.0,)"
