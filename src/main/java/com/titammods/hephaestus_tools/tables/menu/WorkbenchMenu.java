@@ -55,6 +55,7 @@ public class WorkbenchMenu extends ArsenalTableMenu {
 
         @Override
         public boolean isActive() {
+            if (!user.level().isClientSide()) return true;
             return !inspecting && (alwaysShown || inventoryVisible);
         }
     }
