@@ -89,6 +89,7 @@ public class ClientModEvents {
             public BlockEntityWithoutLevelRenderer getCustomRenderer() { return renderer; }
         };
         event.registerItem(ext, tools());
+        event.registerBlock(ArsenalTableParticles.INSTANCE, ModBlocks.ARSENAL_TABLE.get());
     }
 
     @SubscribeEvent
@@ -98,7 +99,7 @@ public class ClientModEvents {
     }
 
     @EventBusSubscriber(modid = HephaestusTools.MOD_ID, value = Dist.CLIENT)
-    public static final class GameEvents {
+    public static class GameEvents {
         private GameEvents() {}
 
         @SubscribeEvent(priority = EventPriority.LOWEST)
