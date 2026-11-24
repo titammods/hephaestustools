@@ -9,13 +9,11 @@ import com.titammods.hephaestus_tools.registry.ModCreativeTabs;
 import com.titammods.hephaestus_tools.registry.ModDataMaps;
 import com.titammods.hephaestus_tools.registry.ModItems;
 import com.titammods.hephaestus_tools.registry.ModMenus;
-import com.titammods.hephaestus_tools.registry.ModRecipes;
 import com.titammods.hephaestus_tools.registry.ModSounds;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 
 @Mod(HephaestusTools.MOD_ID)
 public class HephaestusTools {
@@ -30,19 +28,11 @@ public class HephaestusTools {
         ModBlocks.BLOCK_ENTITIES.register(modBus);
         ModItems.ITEMS.register(modBus);
         ModMenus.MENUS.register(modBus);
-        ModRecipes.RECIPE_TYPES.register(modBus);
-        ModRecipes.RECIPE_SERIALIZERS.register(modBus);
         ModCreativeTabs.TABS.register(modBus);
         ModSounds.SOUNDS.register(modBus);
         EffectRegistries.register(modBus);
         modBus.addListener(ModDataMaps::register);
 
         ModDataGenerators.register(modBus);
-
-        modBus.addListener(this::commonSetup);
-    }
-
-    private void commonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(ModRecipes::registerRecipeTypes);
     }
 }

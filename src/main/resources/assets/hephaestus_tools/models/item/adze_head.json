@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "hephaestus_tools:item/tool/parts/adze_head"
+    "layer0": "hephaestus_tools:item/tool/parts/shovel_head"
   }
 }

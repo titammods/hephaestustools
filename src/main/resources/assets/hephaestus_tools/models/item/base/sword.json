@@ -1,8 +1,0 @@
-{
-  "parent": "minecraft:item/handheld",
-  "textures": {
-    "layer0": "hephaestus_tools:item/tool/sword/blade",
-    "layer1": "hephaestus_tools:item/tool/sword/guard",
-    "layer2": "hephaestus_tools:item/tool/sword/handle"
-  }
-}

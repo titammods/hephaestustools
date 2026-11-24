@@ -1,1 +1,6 @@
-{ "parent": "minecraft:item/generated", "textures": { "layer0": "hephaestus_tools:item/cast/tool_handle" } }
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "hephaestus_tools:item/cast/haft"
+  }
+}
