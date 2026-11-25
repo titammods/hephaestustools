@@ -11,9 +11,12 @@ import com.titammods.hephaestus_tools.tools.nbt.ToolStack;
 import com.titammods.hephaestus_tools.tools.helper.ToolCombat;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -43,12 +46,25 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = HephaestusTools.MOD_ID)
-public final class MasteryEvents {
+public class MasteryEvents {
 
     private MasteryEvents() {}
 
     private static final long STREAK_TICKS = 60, COMBAT_TICKS = 100;
     private static final float HARD_BLOCK = 3.0f;
+    public static final TagKey<Block> BONUS_DROP_BLACKLIST = TagKey.create(Registries.BLOCK,
+            Identifier.fromNamespaceAndPath(HephaestusTools.MOD_ID, "bonus_drop_blacklist"));
+
+    private static boolean canBonusDrop(BlockState state) {
+        return state.is(Tags.Blocks.ORES) && !state.is(BONUS_DROP_BLACKLIST) && !state.hasBlockEntity();
+    }
+
+    private static void bonusDrops(ServerLevel level, BlockPos pos, BlockState state, Player p, ItemStack tool) {
+        for (ItemStack drop : Block.getDrops(state, level, pos, null, p, tool)) {
+            if (drop.isEmpty() || drop.is(state.getBlock().asItem())) continue;
+            Block.popResource(level, pos, drop);
+        }
+    }
 
     private static String mastery(ItemStack tool) {
         if (!ToolStack.isUsable(tool)) return "";
@@ -147,9 +163,9 @@ public final class MasteryEvents {
                 int broken = flood(level, p, pos,
                         s -> s.is(Tags.Blocks.ORES) && (m.equals("chain_reaction") || s.getBlock() == state.getBlock()),
                         limit, range);
-                if (m.equals("motherlode") && broken >= 6) {
+                if (m.equals("motherlode") && broken >= 6 && srv && canBonusDrop(state)) {
                     int extra = broken / 6 + (lv >= 30 ? 1 : 0);
-                    for (int i = 0; i < extra; i++) Block.dropResources(state, level, pos);
+                    for (int i = 0; i < extra; i++) bonusDrops((ServerLevel) level, pos, state, p, ItemStack.EMPTY);
                 }
             }
             case "timberfall", "falling_giant" -> {
@@ -171,9 +187,9 @@ public final class MasteryEvents {
                 if (lv >= 30) MasteryStreak.mine(p.getUUID(), now, STREAK_TICKS);
                 if (lv >= 20 && isGathering(state)) {
                     spareWear(tool, p, 0.15f);
-                    if (srv && state.is(Tags.Blocks.ORES) && !state.hasBlockEntity() && tool.isCorrectToolForDrops(state)
+                    if (srv && canBonusDrop(state) && tool.isCorrectToolForDrops(state)
                             && p.getRandom().nextFloat() < (lv >= 30 ? 0.15f : 0.10f))
-                        Block.dropResources(state, level, pos, null, p, tool);
+                        bonusDrops((ServerLevel) level, pos, state, p, tool);
                 }
             }
             case "trailblazer" -> {
