@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "hephaestus_tools:pickaxe",
+    "hephaestus_tools:sledge_hammer",
+    "hephaestus_tools:vein_hammer",
+    "hephaestus_tools:paxel"
+  ]
+}
